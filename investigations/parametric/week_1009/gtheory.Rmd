@@ -1,0 +1,101 @@
+---
+title: "G Theory for fMRI Batch Investigations"
+author: "Eric Bridgeford"
+date: "October 12, 2017"
+output: html_document
+---
+
+
+# Setting
+
+## Task
+
+Given:
+
++ $n$ samples of data-tuples, $\left\{(g_i, y_i, z_i)\right\}_{i=1}^n$.
++ A graph, $g_i \in G$, where $g_i  = (E, V, w)$ for $N=|V|$ regions of interest and $w(v_i, v_j) = w_{ij}$.
++ A set of fixed-effects, $y_i \in Y$, where $Y$ is the set of variables we expect will have an impact on connectome-to-connectome variation comprised of signal.
++ A set of random-effects, $z_i \in Z$, where $Z$ is the set of variables we expect will have an impact on connectome-to-connectome variation comprised of batch-effects.
+
+Characterize the composition of signal to batch-effect present in the given connectomes, assuming both the fixed-effects and random-effects can be characterized as random inputs in a standard mixed-effects model.
+
+## Statistical Model
+
+Assume that the desired signal at a given edge can be modelled as a linear combination of the random mixed-effects under the Generalizability theory (G-theory) model:
+
+\begin{align*}
+  w_{ij} = Zu + \epsilon
+\end{align*}
+
++ $w_{ij}$ as above
++ $Z$ is the known design matrix relating the observations $y$ to $u$
++ $u$ is the unknown vector of random-effects with $\mathbb{E}\left[u\right] = 0$ and $var(u) = G$
++ $\epsilon$ is the unknown vector of random errors, where $\mathbb{E}\left[\epsilon\right] = 0$ and $var(\epsilon) = R$.
+
+## Statistical Goal
+
+Given that the joint density of $y$ and $u$ can be written $f(y, u) = f(y | u) f(u)$, assuming the normality and independence of our random-effects and errors:
+
+\begin{align*}
+  \begin{bmatrix}
+    u \\ \epsilon
+  \end{bmatrix} = \mathcal{N}\left(0, diag\left(G, R\right)\right)
+\end{align*}
+
+where all covariance terms are $0$, we can solve this system using linear regression and estimate variance terms from unobserved nuisance parameters in the joint likelihood. 
+
+Our goal is to characterize the variance components $\sigma_i$ from mixed-effects combination $i$. Under our given model, we are chiefly interested in several quantities:
+
+### Confidence that a given mixed-effect is significant
+
+We are interested in the quantity of whether a given mixed-effect combinations is significant. To accomplish this, we can formulate the hypothesis of whether $H_0 := \mu_1 = ... = \mu_K$; that is, the mean activity at each edge $\mu_i$ are the same across the $i$ groupings of our given mixed-effect of interest, with $H_A := \textrm{the means are not equal}$. This can be examined using the F-test statistic:
+
+\begin{align*}
+  F &= \frac{\textrm{between-group variability}}{\textrm{within-group varaibility}} \\
+  &= \frac{\sum_{i=1}^K n_i (\bar{Y}_i - \bar{Y})^2/(K - 1)}{\sum_{i=1}^K\sum_{j=1}^{n_i} (Y_{ij} - \bar{Y_{i})^2}/(N - K)}
+\end{align*}
+
+We can the compute the $p-$value where:
+\begin{align*}
+  p = \mathbb{P}\left\{\textrm{Falsely reject $H_0$ for $H_A \; | \; H_0$ is true}\right\}
+\end{align*}
+
+### Proportion of Total Variability accounted by a given mixed-effect
+
+We are interested in the proportion of the variance accounted for by each variance component:
+
+\begin{align*}
+  V &= \frac{\sigma_i^2}{\sum_{j \in M}\sigma_j^2}
+\end{align*}
+
+where $M$ is the set of possible facets and between-facet interactions.
+
+### D-Coefficient
+
+For the inivariate case, we can estimate the $D$-coefficients:
+
+\begin{align*}
+  \phi_{UV}(X) = \frac{\sigma^2_p(x)}{\sigma_p(x)^2 + \sum_{i\in M \ p} \frac{\sigma_i^2}{n_i}}
+\end{align*}
+
+where $n_i$ are the number of conditions facet $i$ can occupy, and $p$ are our test-subjects in our investigation.
+
+### Multivariate Test-Retest Reliability
+
+
+\begin{align*}
+  \phi_{MV}(X) = \frac{\sum_{x=1}^X\sigma^2_p(x)}{\sum_{x=1}^X\left(\sigma_p(x)^2 + \sum_{i\in M \ p} \frac{\sigma_i^2}{n_i}\right)}
+\end{align*}
+
+For our below investigations, we will investigate the following facets: person $p$, sex $s$, dataset collection site $d$.
+
+```{r}
+require(fmriutils)
+require(VCA)
+dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'MRN', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
+graphs = graphobj$graphs
+datasets = graphobj$datasets
+subjects = graphobj$subjects
+```
