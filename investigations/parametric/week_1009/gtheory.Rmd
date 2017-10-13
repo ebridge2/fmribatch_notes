@@ -72,7 +72,7 @@ where $M$ is the set of possible facets and between-facet interactions.
 
 ### D-Coefficient
 
-For the inivariate case, we can estimate the $D$-coefficients:
+For the inivariate case, we can estimate the dependability $D$-coefficients:
 
 \begin{align*}
   \phi_{UV}(X) = \frac{\sigma^2_p(x)}{\sigma_p(x)^2 + \sum_{i\in M \ p} \frac{\sigma_i^2}{n_i}}
@@ -89,13 +89,82 @@ where $n_i$ are the number of conditions facet $i$ can occupy, and $p$ are our t
 
 For our below investigations, we will investigate the following facets: person $p$, sex $s$, dataset collection site $d$.
 
+# Functional
+
 ```{r}
 require(fmriutils)
 require(VCA)
-dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'MRN', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+require(stringr)
 
-graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
+dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'MRN1', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/raw_fmri_graphs/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
 graphs = graphobj$graphs
-datasets = graphobj$datasets
+```
+
+```{r, warnings=FALSE}
+gcpy = graphs
+datasets = graphobj$dataset
 subjects = graphobj$subjects
+
+parse_class <- function(basepath, dsets, subjects) {
+  
+  sex = list()
+  disease = list()
+  age = list()
+  include = c()
+  for (dset in dsets) {
+    path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
+    tab = read.csv(path_to_file)
+    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+    tab$SEX = tab$SEX == 2
+    tab = tab[complete.cases(tab$SEX),]
+    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+    for (idx in 1:dim(tab)[1]) {
+      subid = toString(tab[idx,]$SUBID)
+      sex[[subid]] = tab[idx,]$SEX
+      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+      disease[[subid]] = tab[idx,]$DSM_IV_TR
+    }
+  }
+  
+  sclass = array(NaN, dim=c(length(subjects)))
+  ageclass = sclass
+  diseaseclass = sclass
+  for (i in 1:length(subjects)) {
+    subject = subjects[i]
+    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
+    idx = which(names(sex) == subid)
+    if (length(idx) >= 1) {
+      sclass[i] <- sex[[subid]]
+      ageclass[i] <- age[[subid]]
+      diseaseclass[i] <- disease[[subid]]
+    }
+  }
+  return(list(sex=sclass, age=ageclass, disease=diseaseclass))
+}
+
+sexpath = '/home/eric/Documents/research/ndmg-repos/ndmg-paper/code/fngs_class/'
+class = parse_class(sexpath, dsets, subjects)
+sexs = class$sex
+diseases = class$disease
+ages = class$age
+
+graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
+datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+ages = ages[!is.nan(ages) & !is.nan(sexs)]
+```
+
+```{r}
+VC = array(NaN, dim=c(70,70, 6))
+pval = array(NaN, dim=c(70, 70))
+test_dat = data.frame(sex=sexs, dataset=datasets, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
+for (i in 1:70) {
+  for (j in 1:70) {
+    test_dat$dat <- graphs[,i,j]
+    result <- anovaMM(dat~(subject)*(sex)*(dataset), test_dat)
+  }
+}
 ```
