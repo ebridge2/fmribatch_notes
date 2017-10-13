@@ -96,9 +96,9 @@ require(fmriutils)
 require(VCA)
 require(stringr)
 
-dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'MRN1', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
 
-graphobj <- fmriu.io.collection.open_graphs(basepath='/data/raw_fmri_graphs/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/edgelists/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
 graphs = graphobj$graphs
 ```
 
