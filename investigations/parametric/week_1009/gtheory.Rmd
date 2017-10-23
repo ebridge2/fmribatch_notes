@@ -87,11 +87,11 @@ where $n_i$ are the number of conditions facet $i$ can occupy, and $p$ are our t
   \phi_{MV}(X) = \frac{\sum_{x=1}^X\sigma^2_p(x)}{\sum_{x=1}^X\left(\sigma_p(x)^2 + \sum_{i\in M \ p} \frac{\sigma_i^2}{n_i}\right)}
 \end{align*}
 
-For our below investigations, we will investigate the following facets: person $p$, sex $s$, dataset collection site $d$.
+For our below investigations, we will investigate the following facets: person $p$, sex $x$, session $s$, dataset collection site $d$.
 
 # Functional
 
-```{r}
+```{r, eval=FALSE}
 require(fmriutils)
 require(VCA)
 require(stringr)
@@ -102,10 +102,11 @@ graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/edgelists/', da
 graphs = graphobj$graphs
 ```
 
-```{r, warnings=FALSE}
+```{r, warnings=FALSE, eval=FALSE}
 gcpy = graphs
 datasets = graphobj$dataset
 subjects = graphobj$subjects
+sessions = graphobj$sessions
 
 parse_class <- function(basepath, dsets, subjects) {
   
@@ -151,20 +152,40 @@ diseases = class$disease
 ages = class$age
 
 graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
-sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
 datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
 subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
-ages = ages[!is.nan(ages) & !is.nan(sexs)]
+sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+ager = ages[!is.nan(ages) & !is.nan(sexs)]
+sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
 ```
 
-```{r}
-VC = array(NaN, dim=c(70,70, 6))
-pval = array(NaN, dim=c(70, 70))
-test_dat = data.frame(sex=sexs, dataset=datasets, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
-for (i in 1:70) {
-  for (j in 1:70) {
+```{r, eval=FALSE}
+VC = array(NaN, dim=c(70,70, 5))
+dcoef = array(0, dim=c(70, 70))
+test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
+model = "dat ~ (1| subject) + (1| dataset) + (1| sex) + (1| session)"
+var = c("subject", "dataset", "session", "sex", "residual")
+for (i in 1:69) {
+  print(i)
+  for (j in (i+1):70) {
+    print(j)
     test_dat$dat <- graphs[,i,j]
-    result <- anovaMM(dat~(subject)*(sex)*(dataset), test_dat)
+    result <- gstudy(test_dat, formula=model)
+    VC[i, j,] <- result$components$var
+    VC[j, i,] <- VC[i, j,]
+    dcoef[i, j] <- dstudy(result, colname.objects="subject", data=test_dat, colname.scores="dat")$dependability
+    dcoef[j, i] <- dcoef[i, j]
   }
 }
+```
+
+Per effect, we can plot the percent variance per-edge:
+
+```{r}
+correction <- 1/apply(VC, c(1,2), sum)
+for (i in 1:5){
+  dat <- VC[,,i]*correction
+  print(fmriu.plot.plot_graph(dat,  legend.name='percent', title=sprintf("%s variance percentage, mean=%.3f", var[i], mean(dat[!is.nan(dat)]))))
+}
+print(fmriu.plot.plot_graph(dcoef,  legend.name='percent', title=sprintf("dependability of model, mean=%.3f",mean(dcoef[!is.nan(dcoef)]))))
 ```

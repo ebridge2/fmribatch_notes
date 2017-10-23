@@ -182,7 +182,7 @@ We can the compute the <span class="math inline">\(p-\)</span>value where:
 </div>
 <div id="d-coefficient" class="section level3">
 <h3>D-Coefficient</h3>
-<p>For the inivariate case, we can estimate the <span class="math inline">\(D\)</span>-coefficients:</p>
+<p>For the inivariate case, we can estimate the dependability <span class="math inline">\(D\)</span>-coefficients:</p>
 <span class="math display">\[\begin{align*}
   \phi_{UV}(X) = \frac{\sigma^2_p(x)}{\sigma_p(x)^2 + \sum_{i\in M \ p} \frac{\sigma_i^2}{n_i}}
 \end{align*}\]</span>
@@ -193,8 +193,83 @@ We can the compute the <span class="math inline">\(p-\)</span>value where:
 <span class="math display">\[\begin{align*}
   \phi_{MV}(X) = \frac{\sum_{x=1}^X\sigma^2_p(x)}{\sum_{x=1}^X\left(\sigma_p(x)^2 + \sum_{i\in M \ p} \frac{\sigma_i^2}{n_i}\right)}
 \end{align*}\]</span>
+<p>For our below investigations, we will investigate the following facets: person <span class="math inline">\(p\)</span>, sex <span class="math inline">\(x\)</span>, session <span class="math inline">\(s\)</span>, dataset collection site <span class="math inline">\(d\)</span>.</p>
 </div>
 </div>
+</div>
+<div id="functional" class="section level1">
+<h1>Functional</h1>
+<pre class="r"><code>require(fmriutils)
+require(VCA)
+require(stringr)
+
+dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+
+graphobj &lt;- fmriu.io.collection.open_graphs(basepath='/data/fmri/edgelists/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
+graphs = graphobj$graphs</code></pre>
+<pre class="r"><code>gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+parse_class &lt;- function(basepath, dsets, subjects) {
+  
+  sex = list()
+  disease = list()
+  age = list()
+  include = c()
+  for (dset in dsets) {
+    path_to_file = file.path(basepath, paste(dset, &quot;_phenotypic_data.csv&quot;, sep=&quot;&quot;))
+    tab = read.csv(path_to_file)
+    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+    tab$SEX = tab$SEX == 2
+    tab = tab[complete.cases(tab$SEX),]
+    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+    for (idx in 1:dim(tab)[1]) {
+      subid = toString(tab[idx,]$SUBID)
+      sex[[subid]] = tab[idx,]$SEX
+      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+      disease[[subid]] = tab[idx,]$DSM_IV_TR
+    }
+  }
+  
+  sclass = array(NaN, dim=c(length(subjects)))
+  ageclass = sclass
+  diseaseclass = sclass
+  for (i in 1:length(subjects)) {
+    subject = subjects[i]
+    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?&lt;=sub-).*'), perl=TRUE)
+    idx = which(names(sex) == subid)
+    if (length(idx) &gt;= 1) {
+      sclass[i] &lt;- sex[[subid]]
+      ageclass[i] &lt;- age[[subid]]
+      diseaseclass[i] &lt;- disease[[subid]]
+    }
+  }
+  return(list(sex=sclass, age=ageclass, disease=diseaseclass))
+}
+
+sexpath = '/home/eric/Documents/research/ndmg-repos/ndmg-paper/code/fngs_class/'
+class = parse_class(sexpath, dsets, subjects)
+sexs = class$sex
+diseases = class$disease
+ages = class$age
+
+graphs = graphs[!is.nan(ages) &amp; !is.nan(sexs),,]
+datasets = datasets[!is.nan(ages) &amp; !is.nan(sexs)]
+subjects = subjects[!is.nan(ages) &amp; !is.nan(sexs)]
+sessions = sessions[!is.nan(ages) &amp; !is.nan(sexs)]
+ager = ages[!is.nan(ages) &amp; !is.nan(sexs)]
+sexr = sexs[!is.nan(ages) &amp; !is.nan(sexs)]</code></pre>
+<pre class="r"><code>VC = array(NaN, dim=c(70,70, 5))
+test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
+model = &quot;dat ~ (1| subject) + (1| dataset) + (1| sex) + (1| session)&quot;
+for (i in 1:70) {
+  for (j in 1:70) {
+    test_dat$dat &lt;- graphs[,i,j]
+    result &lt;- gstudy(test_dat, formula=model)
+  }
+}</code></pre>
 </div>
 
 
