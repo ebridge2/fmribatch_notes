@@ -87,17 +87,15 @@
                             <li>$Var(w_{ij, s,x,n,d}) = \sum_{k=1}^K Var(X_{id, s,x,l,d}^{(k)}) + Var(\epsilon)$</li>
                             <li>That is, the variance of the response is the sum of the variance of the components</li>
                             <li>$\rightarrow Cov(X_{s,x,l,d}^{(k)}, X_{s,x,l,d}^{(l)}) = 0$</li>
+                            <li>TODO assummption about X_i</li>
                         </ul>
                     </section>
 
                     <section>
                         <h3>Evaluation</h3>
                         <ul>
-                            <li>percent variance for $k$: $\frac{Var(X_{ij, s,x,l,d}^{(k)})}{Var(w_{ij, s,x,n,d})}$</li>
-                            <li>Dependability: $\phi_{UV}(w_{ij}) = \frac{Var(subject)}{Var(w_{ij, s,x,n,d})}$</li>
-                            <ul>
-                                <li>Note: dependability is same as percent-variance due to subject</li>
-                            </ul>
+                            <li>percent variance for $k$: $\frac{Var(X_{ij, s,x,l,d}^{(k)})}{Var(X_{ij, s,x,n,d})}$</li>
+                            <li>Dependability: $\phi_{UV}(X_{ij}) = \frac{Var(subject)}{\sum_{k=1}^K \frac{Var(X_{ij, s,x,n,d}^{(k)})}{n_{s, x, n, d}}}$</li>
                         </ul>
                     </section>
                 </section>
@@ -107,16 +105,53 @@
                         <img src="./sub.png" alt="Subject"/>
                     </section>
                     <section>
+                        <img src="./dsub.png" alt="Subject"/>
+                    </section>
+                    <section>
                         <img src="./dset.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <img src="./ddset.png" alt="Subject"/>
                     </section>
                     <section>
                         <img src="./ses.png" alt="Subject"/>
                     </section>
                     <section>
+                        <img src="./dses.png" alt="Subject"/>
+                    </section>
+                    <section>
                         <img src="./sex.png" alt="Subject"/>
                     </section>
                     <section>
+                        <img src="./dsex.png" alt="Subject"/>
+                    </section>
+                    <section>
                         <img src="./residual.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <img src="./der.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <img src="./fdep.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <img src="./ddep.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <h2>Functional Vertex-wise Dependability</h2>
+                        <img src="./fdepv.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <h2>Diffusion Vertex-wise Dependability</h2>
+                        <img src="./ddepv.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <h2>Functional Vertex-wise Batch-Effect</h2>
+                        <img src="./fdsetv.png" alt="Subject"/>
+                    </section>
+                    <section>
+                        <h2>Functional Vertex-wise Batch-Effect</h2>
+                        <img src="./dbatchv.png" alt="Subject"/>
                     </section>
                 </section>
 
