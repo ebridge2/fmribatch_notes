@@ -72,12 +72,12 @@
 
                     <section>
                         <h3>Random-Effects Model</h3>
-                        <p>$w_{ij,s,x,n,d} = \sum_{k=1}^K\beta_{ij,k} X_{ij, s, x, n, d}^{(k)} + \epsilon_{ij} + \mu_{ij}$</p>
+                        <p>$w_{ij,s,x,n,d} = \sum_{k=1}^K\beta_{ij,s, x, n, d}^{(k)} X_{ij, s, x, n, d}^{(k)} + \epsilon_{ij} + \mu_{ij}$</p>
                         <ul>
-                            <li>Random effect $k$ with values $X^{(k)}_{ij, \cdot}$ and coefs $\beta_k$</li>
+                            <li>Random effect $k$ with values $X^{(k)}_{ij, \cdot}$ and coefs $\beta_{ij, \cdot}$</li>
                             <li>Effects modelled: subject $s$, sex $x$, session $n$, dataset $d$</li>
                             <li>mean weight for edge $i, j$ $\mu_{ij}$</li>
-                            <li>error for edge $i, j$ $\epsilon_{ij}$</li>
+                            <li>residual for edge $i, j$ $\epsilon_{ij}$</li>
                         </ul>
                     </section>
 
