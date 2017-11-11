@@ -1,0 +1,402 @@
+---
+  title: "G Theory for fMRI Batch Investigations"
+author: "Eric Bridgeford"
+date: "October 12, 2017"
+output: html_document
+---
+
+# Setting
+  
+## Task
+  
+Given:
+    
++ $n$ samples of data-tuples, $\left\{(g_i, y_i, z_i)\right\}_{i=1}^n$.
++ A graph, $g_i \in G$, where $g_i  = (E, V, w)$ for $N=|V|$ regions of interest and $w(v_i, v_j) = w_{ij}$.
++ A set of fixed-effects, $y_i \in Y$, where $Y$ is the set of variables we expect will have an impact on connectome-to-connectome variation comprised of signal.
++ A set of random-effects, $z_i \in Z$, where $Z$ is the set of variables we expect will have an impact on connectome-to-connectome variation comprised of batch-effects.
+
+Characterize the composition of signal to batch-effect present in the given connectomes, assuming both the fixed-effects and random-effects can be characterized as random inputs in a standard mixed-effects model.
+
+## Statistical Model
+
+Assume that the desired signal at a given edge can be modelled as a linear combination of the fixed and random effects under the mixed-effects model:
+  
+\begin{align*}
+w_{ij, \cdot} = Y\beta_{ij} + Zu_{ij} + \epsilon_{ij}
+\end{align*}
+
+where $w_{ij, \cdot}$ is the vector of connectome weights for the $ij^{th}$ edge. 
+
+Then: 
+  + $\mathbb{E}\left[w_{ij, \cdot}\right] = Y\beta_{ij}$
+  + $\beta_{ij}$ is an unknown vector of fixed-effects
++ $u_{ij}$ is an unknown vector of random-effects where $\mathbb{E}\left[u_{ij}\right] = 0$ and $var(u) = G_{ij}$
+  + $\epsilon_{ij}$ is an unknown vector of random errors, where $\mathbb{E}\left[\epsilon_{ij}\right] = 0$ and $var\left(\epsilon_{ij}\right) = R_{ij}$
+  + $Y$ and $Z$ are the known design matrices relating the observations $w_{ij, \cdot}$ to $\beta_{ij}$ and $u_{ij}$
+
+## Statistical Goal
+  
+Given that the joint density of $y$ and $u$ can be written $f(w_{ij, \cdot}, u_{ij}) = f(w_{ij, \cdot} | u_{ij}) f(u_{ij})$, assuming the normality and independence of our random-effects and errors, we can say that $u_{ij} \sim \mathcal{N}(0, G_{ij})$ and $\epsilon_{ij} \sim \mathcal{N}(0, R_{ij})$, and that $Cov(u_{ij}, \epsilon_{ij}) = 0$. Then we can use Henderson's mixed model equations:
+
+\begin{align*}
+\begin{bmatrix}
+Y^TR^{-1}_{ij}Y & Y^TR^{-1}_{ij}Z \\
+Z^TR^{-1}_{ij}Y & Z^TR^{-1}_{ij}Z + G^{-1}_{ij} \\
+\end{bmatrix} \begin{bmatrix}
+\hat{\beta}_{ij} \\ \hat{u}_{ij}
+\end{bmatrix} &=
+\begin{bmatrix}
+Y^TR^{-1}_{ij}w_{ij, \cdot} \\
+Z^TR^{-1}_{ij}w_{ij, \cdot}
+\end{bmatrix}
+\end{align*}
+
+where $\hat{u}$ and $\hat{\beta}$ are the best linear unbiased estimates for $\beta$ and $u$. We can solve for $\hat{\beta}$ and $\hat{u}$ using EM.
+
+## Evaluation
+
+### Akaike's Information Criterion (AIC) for Determining Model Fit
+
+Given $k$ the number of estimated parameters in the model and $L\left(w_{ij} | \hat{\beta}_{ij}, \hat{u}_{ij}\right)$ the maximum value of the likelihood function for the model, the Akaike's information criterion can be defined:
+
+\begin{align*}
+A\left(w_{ij} | k, \hat{\beta}_{ij}, \hat{u}_{ij}\right) = 2k - 2ln\left(L\left(w_{ij} | \hat{\beta}_{ij}, \hat{u}_{ij}\right)\right)
+\end{align*}
+
+where $\hat{L}$ is the estimated fit of the mixed-effects model.
+
+We will use the notation $\delta_A = A_m - A_n$ to denote the difference in the AIC between the null (without the dataset-labels as a random-effect) and the model (with the dataset-labels as a random-effect) in the below.
+
+#### Test Statistic
+
+[Welch's T-Test](https://en.wikipedia.org/wiki/Welch%27s_t-test) for testing whether populations have equal means given that they have different variances in the univariate case.
+
+\begin{align*}
+    T = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
+\end{align*}
+
+and the degrees of freedom can be calculated as follows:
+
+\begin{align*}
+    \nu &= \frac{\left(\frac{s_I^2}{n_1} + \frac{s_C^2}{n_2}\right)^2}{\frac{s_1^4}{n_1^2 \nu_1} + \frac{s_2^4}{n_2^2\nu_2}}
+\end{align*}
+
+where the standard deviation $s_j = \sqrt{\frac{p_j(1 - p_j)}{\left(\frac{N}{2}\right)^2}}$
+
+where $\nu_1 = n_1 - 1, \; \nu_2 = n_2 - 1$.
+
+We can then use a one-sided test given $T, \nu$ to get a $p-$ value.
+
+#### P-Value
+
+We can compute a p-value of falsely rejecting the null hypothesis by simply finding the area:
+
+\begin{align*}
+    p = \int_{-T_{observed}}^{\infty}p(x, df) dx = 1 - \int_{-\infty}^{T_{observed}} p(x, df) dx
+\end{align*}
+
+where $p(x, df)$ is the pdf for the $T$ distribution with degrees of freedom $df$.
+
+### Confidence that a given mixed-effect is significant
+
+We are interested in the quantity of whether a given mixed-effect combinations is significant. To accomplish this, we can formulate the hypothesis of whether $H_0 := \mu_1 = ... = \mu_K$; that is, the mean activity at each edge $\mu_i$ are the same across the $i$ groupings of our given mixed-effect of interest, with $H_A := \textrm{the means are not equal}$. 
+
+We can the compute the $p-$value where:
+
+\begin{align*}
+  p = \mathbb{P}\left{\textrm{Falsely reject $H_0$ for $H_A ; | ; H_0$ is true}\right}
+\end{align*}
+
+#### Test Statistic
+
+This can be examined using the F-test statistic:
+
+\begin{align*}
+F &= \frac{\textrm{between-group variability}}{\textrm{within-group varaibility}} \\
+  &= \frac{\sum_{i=1}^K n_i (\bar{Y}i - \bar{Y})^2/(K - 1)}{\sum{i=1}^K\sum_{j=1}^{n_i} (Y_{ij} - \bar{Y_{i})^2}/(N - K)}
+\end{align*}
+
+#### P-Value
+
+We can compute a p-value of falsely rejecting the null hypothesis by simply finding the area:
+
+\begin{align*}
+    p = \int_{-F_{observed}(N-1, N-K)}^{\infty}p(w, N, K) dx = 1 - \int_{-\infty}^{F_{observed}(N-1, N-K)} p(x, df) dx
+\end{align*}
+
+where $p(x, df)$ is the pdf for the $T$ distribution with degrees of freedom $N-1, N-K$.
+
+# Diffusion
+
+```{r}
+require(fmriutils)
+require(VCA)
+require(stringr)
+require(gtheory)
+
+dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', datasets = dsets, atlases = c('desikan'), gname = "graphs", fmt='edgelist', rtype='array')
+graphs = graphobj$graphs
+```
+
+```{r, warnings=FALSE}
+gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+parse_class <- function(basepath, dsets, subjects) {
+
+sex = list()
+disease = list()
+age = list()
+include = c()
+for (dset in dsets) {
+path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
+tab = read.csv(path_to_file)
+tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+tab$SEX = tab$SEX == 2
+tab = tab[complete.cases(tab$SEX),]
+tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+for (idx in 1:dim(tab)[1]) {
+  subid = toString(tab[idx,]$SUBID)
+  sex[[subid]] = tab[idx,]$SEX
+  age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+  disease[[subid]] = tab[idx,]$DSM_IV_TR
+}
+}
+
+sclass = array(NaN, dim=c(length(subjects)))
+ageclass = sclass
+diseaseclass = sclass
+for (i in 1:length(subjects)) {
+  subject = subjects[i]
+  subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
+  idx = which(names(sex) == subid)
+  if (length(idx) >= 1) {
+    sclass[i] <- sex[[subid]]
+    ageclass[i] <- age[[subid]]
+    diseaseclass[i] <- disease[[subid]]
+  }
+}
+return(list(sex=sclass, age=ageclass, disease=diseaseclass))
+}
+
+sexpath = '/home/eric/Documents/research/ndmg-repos/ndmg-paper/code/fngs_class/'
+class = parse_class(sexpath, dsets, subjects)
+sexs = class$sex
+diseases = class$disease
+ages = class$age
+
+graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+ager = ages[!is.nan(ages) & !is.nan(sexs)]
+sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
+```
+
+```{r}
+AIC.model = array(0, dim=c(70, 70))
+AIC.null = array(0, dim=c(70, 70))
+dcoef = array(0, dim=c(70, 70))
+test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
+
+for (i in 1:69) {
+  for (j in (i+1):70) {
+    test_dat$dat <- graphs[,i,j]
+    AIC.model[i, j] <- AIC(lmer(dat~subject + (1 | dataset), data=test_dat, REML=FALSE))
+    AIC.null[i, j] <- AIC(lm(dat~subject, data=test_dat))
+  }
+}
+
+AIC.model <- AIC.model + t(AIC.model)
+AIC.null <- AIC.null + t(AIC.null)
+```
+
+We can plot the density estimate between the :
+  
+```{r}
+dcoef[is.nan(dcoef)] <- 0
+correction <- 1/apply(VC, c(1,2), sum)
+correction[is.infinite(correction)] = 1
+for (i in 1:5){
+  dat <- VC[,,i]*correction
+  print(fmriu.plot.plot_graph(dat,  legend.name='percent', title=sprintf("DWI %s variance percentage, mean=%.3f", var[i],
+                                                                         mean(dat[!is.nan(dat)])), limits = c(min(dat), max(dat))))
+}
+print(fmriu.plot.plot_graph(dcoef,  legend.name='percent', title=sprintf("DWI dependability of model, mean=%.3f",mean(dcoef[!is.nan(dcoef)])),
+                            limits=c(min(dcoef), max(dcoef))))
+```
+
+Below, we sum across dependability, obtaining the per-vertex summed dependability scores. We plot the per-vertex dependability scores, with Blue for low dependability scores and Green for higher dependability scores:
+  
+```{r}
+require(RColorBrewer)
+require(oro.nifti)
+
+dvertices = apply(dcoef, 1, sum)
+nvertices = apply(VC[,,2]*correction, 1, sum)
+
+# atlas is a oro.nifti image
+plot_brain_overlay <- function(atlas, reference, values) {
+  ov <- atlas
+  # sort the rois so that they go low to small, which is what pipeline outputs
+  roimap <- sort(unique(array(atlas@.Data)))
+  roimap <- roimap[2:length(roimap)]  # ignore 0 valued roi (no region)
+  for (roi in 1:length(values)) {
+    if (is.nan(values[roi])) {
+      ov@.Data[round(atlas@.Data) == roimap[roi]] = 0
+    } else {
+      ov@.Data[round(atlas@.Data) == roimap[roi]] = values[roi]
+    }
+  }
+  overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(min(values), max(values)),
+          col.y=brewer.pal(n = 8, name = "Reds"))
+}
+
+parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan_res-2x2x2.nii.gz')
+template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_t1w_res-2x2x2.nii.gz')
+plot_brain_overlay(parc, template, dvertices)
+```
+
+As we can see, it appears as though the more dependable edges are the edges in the upper cortical regions. Below, we show the vertices colored by the summed (across edges similar to before) percent variance captured by the dataset covariates under the g-study:
+  
+  ```{r}
+plot_brain_overlay(parc, template, nvertices)
+```
+
+the lower sub-cortical regions tend to show higher percent variance captured by the dataset regressors, indicating they may be more explained by batch effects than higher cortical areas.
+
+# Functional
+
+```{r}
+require(fmriutils)
+require(VCA)
+require(stringr)
+
+dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
+graphs = graphobj$graphs
+```
+
+```{r, warnings=FALSE}
+gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+parse_class <- function(basepath, dsets, subjects) {
+  
+  sex = list()
+  disease = list()
+  age = list()
+  include = c()
+  for (dset in dsets) {
+    path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
+    tab = read.csv(path_to_file)
+    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+    tab$SEX = tab$SEX == 2
+    tab = tab[complete.cases(tab$SEX),]
+    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+    for (idx in 1:dim(tab)[1]) {
+      subid = toString(tab[idx,]$SUBID)
+      sex[[subid]] = tab[idx,]$SEX
+      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+      disease[[subid]] = tab[idx,]$DSM_IV_TR
+    }
+  }
+  
+  sclass = array(NaN, dim=c(length(subjects)))
+  ageclass = sclass
+  diseaseclass = sclass
+  for (i in 1:length(subjects)) {
+    subject = subjects[i]
+    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
+    idx = which(names(sex) == subid)
+    if (length(idx) >= 1) {
+      sclass[i] <- sex[[subid]]
+      ageclass[i] <- age[[subid]]
+      diseaseclass[i] <- disease[[subid]]
+    }
+  }
+  return(list(sex=sclass, age=ageclass, disease=diseaseclass))
+}
+
+sexpath = '/home/eric/Documents/research/ndmg-repos/ndmg-paper/code/fngs_class/'
+class = parse_class(sexpath, dsets, subjects)
+sexs = class$sex
+diseases = class$disease
+ages = class$age
+
+graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+ager = ages[!is.nan(ages) & !is.nan(sexs)]
+sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
+```
+
+```{r}
+AIC.model = array(0, dim=c(70, 70))
+AIC.null = array(0, dim=c(70, 70))
+test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
+
+for (i in 1:69) {
+  for (j in (i+1):70) {
+    test_dat$dat <- graphs[,i,j]
+    AIC.model[i, j] <- AIC(lmer(dat~subject + (1 | dataset), test_dat, REML=FALSE))
+    AIC.null[i, j] <- AIC(lm(dat~subject, test_dat))
+  }
+}
+
+AIC.model <- AIC.model + t(AIC.model)
+AIC.null <- AIC.null + t(AIC.null)
+```
+
+Per effect, we can plot the distribution of $\delta$:
+  
+```{r}
+AIC.delta <- AIC.model - AIC.null
+aic.distr.mod = density(as.numeric(AIC.delta))
+```
+
+Below, we sum across dependability, obtaining the per-vertex summed dependability scores. We plot the per-vertex dependability scores, with Blue for low dependability scores and Green for higher dependability scores:
+  
+```{r}
+require(RColorBrewer)
+require(oro.nifti)
+
+dvertices = apply(dcoef, 1, sum)
+nvertices = apply(VC[,,2]*correction, 1, sum)
+
+# atlas is a oro.nifti image
+plot_brain_overlay <- function(atlas, reference, values) {
+  ov <- atlas
+  # sort the rois so that they go low to small, which is what pipeline outputs
+  roimap <- sort(unique(array(atlas@.Data)))
+  roimap <- roimap[2:length(roimap)]  # ignore 0 valued roi (no region)
+  for (roi in 1:length(values)) {
+    if (is.nan(values[roi])) {
+      ov@.Data[round(atlas@.Data) == roimap[roi]] = 0
+    } else {
+      ov@.Data[round(atlas@.Data) == roimap[roi]] = values[roi]
+    }
+  }
+  overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(min(values), max(values)),
+          col.y=brewer.pal(n = 8, name = "Reds"))
+}
+
+parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan_res-2x2x2.nii.gz')
+template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_t1w_res-2x2x2.nii.gz')
+plot_brain_overlay(parc, template, dvertices)
+```
+As we can see, it appears as though the more dependable edges are the edges in the upper cortical regions. Below, we show the vertices colored by the summed (across edges similar to before) percent variance captured by the dataset covariates under the g-study:
+```{r}
+plot_brain_overlay(parc, template, nvertices)
+```
+
+the lower sub-cortical regions tend to show higher percent variance captured by the dataset regressors, indicating they may be more explained by batch effects than higher cortical areas. 
