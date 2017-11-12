@@ -1,9 +1,28 @@
 ---
-  title: "G Theory for fMRI Batch Investigations"
+title: "Mixed-Effects Modelling for fMRI Batch Investigations"
 author: "Eric Bridgeford"
 date: "October 12, 2017"
 output: html_document
 ---
+
+```{r}
+# load packages
+#==========================#
+require(fmriutils)
+require(VCA)
+require(stringr)
+require(lme4)
+require(RColorBrewer)
+require(oro.nifti)
+
+# functions
+#==========================#
+
+xscale.log2 <- function(a=3, b=6, n=10) {
+  return(round(2^(seq(a, b, length.out=n))))
+}
+```
+
 
 # Setting
   
@@ -13,8 +32,8 @@ Given:
     
 + $n$ samples of data-tuples, $\left\{(g_i, y_i, z_i)\right\}_{i=1}^n$.
 + A graph, $g_i \in G$, where $g_i  = (E, V, w)$ for $N=|V|$ regions of interest and $w(v_i, v_j) = w_{ij}$.
-+ A set of fixed-effects, $y_i \in Y$, where $Y$ is the set of variables we expect will have an impact on connectome-to-connectome variation comprised of signal.
-+ A set of random-effects, $z_i \in Z$, where $Z$ is the set of variables we expect will have an impact on connectome-to-connectome variation comprised of batch-effects.
++ A set of fixed-effects, $y_i \in Y$, where $Y$ is the set of variables that we expect to impact magnitude differences in our observations.
++ A set of random-effects, $z_i \in Z$, where $Z$ is a set of variables that will contribute random noise to our observations.
 
 Characterize the composition of signal to batch-effect present in the given connectomes, assuming both the fixed-effects and random-effects can be characterized as random inputs in a standard mixed-effects model.
 
@@ -29,11 +48,20 @@ w_{ij, \cdot} = Y\beta_{ij} + Zu_{ij} + \epsilon_{ij}
 where $w_{ij, \cdot}$ is the vector of connectome weights for the $ij^{th}$ edge. 
 
 Then: 
-  + $\mathbb{E}\left[w_{ij, \cdot}\right] = Y\beta_{ij}$
-  + $\beta_{ij}$ is an unknown vector of fixed-effects
++ $\mathbb{E}\left[w_{ij, \cdot}\right] = Y\beta_{ij}$
++ $\beta_{ij}$ is an unknown vector of fixed-effects
 + $u_{ij}$ is an unknown vector of random-effects where $\mathbb{E}\left[u_{ij}\right] = 0$ and $var(u) = G_{ij}$
-  + $\epsilon_{ij}$ is an unknown vector of random errors, where $\mathbb{E}\left[\epsilon_{ij}\right] = 0$ and $var\left(\epsilon_{ij}\right) = R_{ij}$
-  + $Y$ and $Z$ are the known design matrices relating the observations $w_{ij, \cdot}$ to $\beta_{ij}$ and $u_{ij}$
++ $\epsilon_{ij}$ is an unknown vector of random errors, where $\mathbb{E}\left[\epsilon_{ij}\right] = 0$ and $var\left(\epsilon_{ij}\right) = R_{ij}$
++ $Y$ and $Z$ are the known design matrices relating the observations $w_{ij, \cdot}$ to $\beta_{ij}$ and $u_{ij}$
+
+### Models to be used
+
+```
+null_model: edgeweight ~ sex + age + (1 | subject)
+alternative_model: edgeweight ~ sex + age + (1 | subject) + (1 | dataset)
+```
+
+That is, the null model specifies fixed effects for age and sex, and a random effect for subject. The alternative model specifies fixed effects for age and sex, and random effects for subject and dataset.
 
 ## Statistical Goal
   
@@ -70,16 +98,18 @@ We will use the notation $\delta_A = A_m - A_n$ to denote the difference in the 
 
 #### Test Statistic
 
-[Welch's T-Test](https://en.wikipedia.org/wiki/Welch%27s_t-test) for testing whether populations have equal means given that they have different variances in the univariate case.
+[Paired T-Test](https://en.wikipedia.org/wiki/Welch%27s_t-test) for testing whether populations have equal means given that they have different variances in the univariate case.
 
 \begin{align*}
-    T = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
+    T = \frac{\bar{D}}{\sqrt{\frac{s_M^2}{n_M} + \frac{s_N^2}{n_N}}}
 \end{align*}
+
+where $D$ is the collection $D_{ij} = A_{m, ij} - A_{n, ij}$ (that is, our test is paired). 
 
 and the degrees of freedom can be calculated as follows:
 
 \begin{align*}
-    \nu &= \frac{\left(\frac{s_I^2}{n_1} + \frac{s_C^2}{n_2}\right)^2}{\frac{s_1^4}{n_1^2 \nu_1} + \frac{s_2^4}{n_2^2\nu_2}}
+    \nu &= \frac{\left(\frac{s_M^2}{n_M} + \frac{s_N^2}{n_N}\right)^2}{\frac{s_M^4}{n_M^2 \nu_M} + \frac{s_N^4}{n_N^2\nu_N}}
 \end{align*}
 
 where the standard deviation $s_j = \sqrt{\frac{p_j(1 - p_j)}{\left(\frac{N}{2}\right)^2}}$
@@ -93,20 +123,34 @@ We can then use a one-sided test given $T, \nu$ to get a $p-$ value.
 We can compute a p-value of falsely rejecting the null hypothesis by simply finding the area:
 
 \begin{align*}
-    p = \int_{-T_{observed}}^{\infty}p(x, df) dx = 1 - \int_{-\infty}^{T_{observed}} p(x, df) dx
+    p = \int_{-T_{observed}}^{\infty}p(x, \nu) dx = 1 - \int_{-\infty}^{T_{observed}} p(x, \nu) dx
 \end{align*}
 
-where $p(x, df)$ is the pdf for the $T$ distribution with degrees of freedom $df$.
+where $p(x, \nu)$ is the pdf for the $T$ distribution with degrees of freedom $\nu$.
 
-### Confidence that a given mixed-effect is significant
+### Variance Accounted for by a Given Random Effect
 
-We are interested in the quantity of whether a given mixed-effect combinations is significant. To accomplish this, we can formulate the hypothesis of whether $H_0 := \mu_1 = ... = \mu_K$; that is, the mean activity at each edge $\mu_i$ are the same across the $i$ groupings of our given mixed-effect of interest, with $H_A := \textrm{the means are not equal}$. 
-
-We can the compute the $p-$value where:
+We will look at the amount of variance that can be explained by a given random effect for each random effect present. That is, for each edge $ij$:
 
 \begin{align*}
-  p = \mathbb{P}\left{\textrm{Falsely reject $H_0$ for $H_A ; | ; H_0$ is true}\right}
+\phi_{k, ij} &= \frac{var(Z_k)}{\sum_{l=1}^K var(Z_l)}
 \end{align*}
+
+#### Variance Accounted for by a given Region in the Brain
+
+To visualize the amount of variance accounted for by a given random-effect in each region of the brain, we will look at the average variance accounted for at all edges adjacent a given region. That is:
+
+\begin{align*}
+\Gamma_{k, i} &= \frac{1}{N}\sum_{j=1}^N \phi_{k, ij}
+\end{align*}
+
+This will allow us to think about the variance in terms of the per-region variance, and overlay the per-region variance per random-effect with the parcellation of the brain.
+
+### Confidence that a given random-effect is significant
+
+We are interested in the quantity of whether a given random-effect is significant. To accomplish this, we can formulate the hypothesis of whether $H_0 := \mu_1 = ... = \mu_K$; that is, the mean activity at each edge $\mu_i$ are the same across the $i$ groupings of our given random-effect of interest, with $H_A := \textrm{the means are not equal}$.
+
+Particularly, we are concerned with whether the random-effect for the dataset (the site at which the scan associated with a given connectome was taken) has a significant impact on the resulting signal detected.
 
 #### Test Statistic
 
@@ -119,21 +163,59 @@ F &= \frac{\textrm{between-group variability}}{\textrm{within-group varaibility}
 
 #### P-Value
 
-We can compute a p-value of falsely rejecting the null hypothesis by simply finding the area:
+We can the compute the $p-$value where:
 
 \begin{align*}
-    p = \int_{-F_{observed}(N-1, N-K)}^{\infty}p(w, N, K) dx = 1 - \int_{-\infty}^{F_{observed}(N-1, N-K)} p(x, df) dx
+  p = \mathbb{P}\left\{\textrm{Falsely reject $H_0$ for $H_A \; | \; H_0$ is true}\right\}
 \end{align*}
 
-where $p(x, df)$ is the pdf for the $T$ distribution with degrees of freedom $N-1, N-K$.
+This is equivalent to simply finding the area:
 
-# Diffusion
+\begin{align*}
+    p = \int_{-F_{observed}(N-1, N-K)}^{\infty}p(x, N-1, N-K) dx = 1 - \int_{-\infty}^{F_{observed}} p(x, N-1, N-K) dx
+\end{align*}
+
+where $p(x, N-1, N-K)$ is the pdf for the $F$ distribution with degrees of freedom $N-1, N-K$.
+
+
+# Simulations
+
+In our simulations, we will investigate our ability to accurately identify the convergence of parameters estimated by our model to the true variances as we increase our number of samples in our dataset using the `lmer` package. We will begin with the following simulated example:
+
+```
+Y ~ X + Y + (1 | Z) + (1 | Q) + Eps
+```
+
+where $X \in \{0, 1\}$ is a categorical fixed-effect to simulate sex, $Y$ is a continuous fixed-effect to simulate age, $Z$ and $Q$ are random-effects to simulate subject id and dataset id, and `Eps` is random error. All effects are assumed to be independent in this simple case.
+
+In pseudo-code, we will perform:
+```
++ for i in 1:5:
+  + n = round(2^(i+1))  # log-base-2 scale of the numbers of possible observations
+  Xids = sim(100, {0, 1})  # simulate n values for X
+  Yids = sim(100, norm(mean=50, sd=20))  # simulate n variables with mean of 50
+  Zids = sim(100, norm(mean=0, sd=sqrt(varz)))  # simulate n mean-0 varas with sd of sqrt(varz)
+  Qids = sim(100, norm(mean=0, sd=sqrt(varq)))  # simulate n mean-0 varas with sd of sqrt(varq)
+  Eps = sim(n, norm(mean=0, sd=sqrt(eps)))  # simulate n error terms
+  Y = 20*Xids + 5*Yids + Zids + Qids + Eps # sum to get Y
+  fit.model = lmer(Y ~ X + Y + (1 | Z) + (1 | Q))  # fit a model with Q
+  fit.null = lmer(Y ~ X + Y + (1 | Z))  # fit a null model without Q
+  result = anova(fit.model, fit.null)  # determine the fit of the model with and without Q
+  pr[i] = probability that the model is a better fit with Q than without
+  er_params[i] = check the error of the estimated parameters and ratios of variances
+show that the probability that Q positively impacts our model fit improves with larger n
+show that our parameters for the intercepts and estimated variance converge with larger n
+```
 
 ```{r}
-require(fmriutils)
-require(VCA)
-require(stringr)
-require(gtheory)
+
+```
+
+# Real Data
+
+## Diffusion
+
+```{r, eval=FALSE}
 
 dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
 
@@ -141,7 +223,7 @@ graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', dat
 graphs = graphobj$graphs
 ```
 
-```{r, warnings=FALSE}
+```{r, warnings=FALSE, eval=FALSE}
 gcpy = graphs
 datasets = graphobj$dataset
 subjects = graphobj$subjects
@@ -198,7 +280,7 @@ ager = ages[!is.nan(ages) & !is.nan(sexs)]
 sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
 ```
 
-```{r}
+```{r, eval=FALSE}
 AIC.model = array(0, dim=c(70, 70))
 AIC.null = array(0, dim=c(70, 70))
 dcoef = array(0, dim=c(70, 70))
@@ -218,7 +300,7 @@ AIC.null <- AIC.null + t(AIC.null)
 
 We can plot the density estimate between the :
   
-```{r}
+```{r, eval=FALSE}
 dcoef[is.nan(dcoef)] <- 0
 correction <- 1/apply(VC, c(1,2), sum)
 correction[is.infinite(correction)] = 1
@@ -233,9 +315,7 @@ print(fmriu.plot.plot_graph(dcoef,  legend.name='percent', title=sprintf("DWI de
 
 Below, we sum across dependability, obtaining the per-vertex summed dependability scores. We plot the per-vertex dependability scores, with Blue for low dependability scores and Green for higher dependability scores:
   
-```{r}
-require(RColorBrewer)
-require(oro.nifti)
+```{r, eval=FALSE}
 
 dvertices = apply(dcoef, 1, sum)
 nvertices = apply(VC[,,2]*correction, 1, sum)
@@ -264,15 +344,15 @@ plot_brain_overlay(parc, template, dvertices)
 
 As we can see, it appears as though the more dependable edges are the edges in the upper cortical regions. Below, we show the vertices colored by the summed (across edges similar to before) percent variance captured by the dataset covariates under the g-study:
   
-  ```{r}
+```{r, eval=FALSE}
 plot_brain_overlay(parc, template, nvertices)
 ```
 
 the lower sub-cortical regions tend to show higher percent variance captured by the dataset regressors, indicating they may be more explained by batch effects than higher cortical areas.
 
-# Functional
+## Functional
 
-```{r}
+```{r, eval=FALSE}
 require(fmriutils)
 require(VCA)
 require(stringr)
@@ -283,7 +363,7 @@ graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/'
 graphs = graphobj$graphs
 ```
 
-```{r, warnings=FALSE}
+```{r, warnings=FALSE, eval=FALSE}
 gcpy = graphs
 datasets = graphobj$dataset
 subjects = graphobj$subjects
@@ -340,7 +420,7 @@ ager = ages[!is.nan(ages) & !is.nan(sexs)]
 sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
 ```
 
-```{r}
+```{r, eval=FALSE}
 AIC.model = array(0, dim=c(70, 70))
 AIC.null = array(0, dim=c(70, 70))
 test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
@@ -359,14 +439,14 @@ AIC.null <- AIC.null + t(AIC.null)
 
 Per effect, we can plot the distribution of $\delta$:
   
-```{r}
+```{r, eval=FALSE}
 AIC.delta <- AIC.model - AIC.null
 aic.distr.mod = density(as.numeric(AIC.delta))
 ```
 
 Below, we sum across dependability, obtaining the per-vertex summed dependability scores. We plot the per-vertex dependability scores, with Blue for low dependability scores and Green for higher dependability scores:
   
-```{r}
+```{r, eval=FALSE}
 require(RColorBrewer)
 require(oro.nifti)
 
@@ -395,7 +475,7 @@ template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_t1w_res-
 plot_brain_overlay(parc, template, dvertices)
 ```
 As we can see, it appears as though the more dependable edges are the edges in the upper cortical regions. Below, we show the vertices colored by the summed (across edges similar to before) percent variance captured by the dataset covariates under the g-study:
-```{r}
+```{r, eval=FALSE}
 plot_brain_overlay(parc, template, nvertices)
 ```
 
