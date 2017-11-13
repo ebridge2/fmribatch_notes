@@ -14,12 +14,18 @@ require(stringr)
 require(lme4)
 require(RColorBrewer)
 require(oro.nifti)
-
+require(reshape2)
+require(latex2exp)
+require(ggplot2)
 # functions
 #==========================#
 
 xscale.log2 <- function(a=3, b=6, n=10) {
   return(round(2^(seq(a, b, length.out=n))))
+}
+
+xscale.log10 <- function(a=1, b=3, n=10) {
+  return(round(10^(seq(a, b, length.out=n))))
 }
 ```
 
@@ -183,7 +189,7 @@ where $p(x, N-1, N-K)$ is the pdf for the $F$ distribution with degrees of freed
 In our simulations, we will investigate our ability to accurately identify the convergence of parameters estimated by our model to the true variances as we increase our number of samples in our dataset using the `lmer` package. We will begin with the following simulated example:
 
 ```
-Y ~ X + Y + (1 | Z) + (1 | Q) + Eps
+R ~ X + Y + (1 | Z) + (1 | Q) + Eps
 ```
 
 where $X \in \{0, 1\}$ is a categorical fixed-effect to simulate sex, $Y$ is a continuous fixed-effect to simulate age, $Z$ and $Q$ are random-effects to simulate subject id and dataset id, and `Eps` is random error. All effects are assumed to be independent in this simple case.
@@ -197,9 +203,9 @@ In pseudo-code, we will perform:
   Zids = sim(100, norm(mean=0, sd=sqrt(varz)))  # simulate n mean-0 varas with sd of sqrt(varz)
   Qids = sim(100, norm(mean=0, sd=sqrt(varq)))  # simulate n mean-0 varas with sd of sqrt(varq)
   Eps = sim(n, norm(mean=0, sd=sqrt(eps)))  # simulate n error terms
-  Y = 20*Xids + 5*Yids + Zids + Qids + Eps # sum to get Y
-  fit.model = lmer(Y ~ X + Y + (1 | Z) + (1 | Q))  # fit a model with Q
-  fit.null = lmer(Y ~ X + Y + (1 | Z))  # fit a null model without Q
+  R = 20*Xids + 5*Yids + Zids + Qids + Eps # sum to get Y
+  fit.model = lmer(R ~ X + Y + (1 | Z) + (1 | Q))  # fit a model with Q
+  fit.null = lmer(R ~ X + Y + (1 | Z))  # fit a null model without Q
   result = anova(fit.model, fit.null)  # determine the fit of the model with and without Q
   pr[i] = probability that the model is a better fit with Q than without
   er_params[i] = check the error of the estimated parameters and ratios of variances
@@ -207,192 +213,171 @@ show that the probability that Q positively impacts our model fit improves with 
 show that our parameters for the intercepts and estimated variance converge with larger n
 ```
 
-```{r}
+```{r, warning=FALSE}
+no <- 15 # number of steps we will have
+ns <- xscale.log2(a=4, b=9, n=no)  # number of samples
+nrep <- 50  # number of replicates per n for our simulations to smooth our plots a bit
+xsl <- 20  # slope of x
+ysl <- 5  # slope of y
+zstd <- 6  # std of z
+qstd <- 12  # std of q
+ervar <- 5  # error term
+nz <- 20  # number of possible z
+nq <- 10  # number of possible q
+aic_diff <- array(0, dim=c(no))  # make sure the model always fits better with q than without
+xsl_er <- array(0, dim=c(no))
+ysl_er <- array(0, dim=c(no))
+zstd_er <- array(0, dim=c(no))
+qstd_er <- array(0, dim=c(no))
+aic_pr <- array(0, dim=c(no))
 
+for (i in 1:length(ns)) {
+  n <- ns[i]
+  xsler <- array(0, dim=c(nrep))
+  ysler <- array(0, dim=c(nrep))
+  zstder <- array(0, dim=c(nrep))
+  qstder <- array(0, dim=c(nrep))
+  aicdiff <- array(0, dim=c(nrep))
+  aicpr <- array(0, dim=c(nrep))
+  for (j in 1:nrep) {
+    X <- rbinom(n=n, size=1, p=0.4)  # choose the xs as bernoulli
+    Y = rnorm(n=n, mean=50, sd=20)  # choose the ys as continuous w mean 50
+    # choose the means of the z and q labels
+    zmeans <- rnorm(n=nz, mean=0, sd=zstd)
+    qmeans <- rnorm(n=nq, mean=0, sd=qstd)
+    # assign labels to zs and qs for each n
+    zsamp <- sample(nz, size=n, replace=TRUE)
+    qsamp <- sample(nq, size=n, replace=TRUE)
+    # assign the values of the zs and qs
+    Z <- array(0, dim=c(n))
+    Q <- array(0, dim=c(n))
+    for (k in 1:nz) {
+      idxz <- zsamp == k
+      Z[idxz] <- rnorm(n=sum(idxz), mean=zmeans[k], sd=2)  # fix error sd=2
+    }
+    for (k in 1:nq) {
+      idxq <- qsamp == k
+      Q[idxq] <- rnorm(n=sum(idxq), mean=qmeans[k], sd=2)  # fix error sd=2
+    }
+    eps <- rnorm(n=n, mean=0, sd=ervar)
+    result <- xsl*X + ysl*Y + Z + Q + eps
+    data <- data.frame(d=result, x=X, y=Y, z=zsamp, q=qsamp)
+    fit.model <- lmer(d ~ x + y + (1 | z) + (1 | q), data, REML=FALSE)  # model as above; use ML estimate
+    modsum <- summary(fit.model)  # summarize the model
+    xsler[j] <- abs(modsum$coefficients[2,1] - xsl)/xsl  # x slope er
+    ysler[j] <- abs(modsum$coefficients[3,1] - ysl)/ysl  # y slope er
+    zstder[j] <- abs(attributes(modsum$varcor$z)$stddev - zstd)/zstd  # z variance er
+    qstder[j] <- abs(attributes(modsum$varcor$q)$stddev - qstd)/qstd  # q variance er
+    fit.null <- lmer(d ~ x + y + (1 | z), data, REML=FALSE)  # model without q
+    anres <- anova(fit.null, fit.model)  # compare the two models to check that the model with q is a better fit
+    aicdiff[j] <- anres$AIC[2] - anres$AIC[1]  # model (which is [2]) should have a lower AIC, so we expect this to get more negative
+    aicpr[j] <- anres$`Pr(>Chisq)`[2]  # pval of model with q should be near zero (significant WHP)
+  }
+  xsl_er[i] <- mean(xsler)
+  ysl_er[i] <- mean(ysler)
+  zstd_er[i] <- mean(zstder)
+  qstd_er[i] <- mean(qstder)
+  aic_diff[i] <- mean(aicdiff)
+  aic_pr[i] <- mean(aicpr)
+}
 ```
+
+We can visualize the results of our simulation, first checking our parameter estimate errors. We expect that as `n` increases, our parameter estimates will improve, and thus get closer to zero. We define the parameter estimate error for a param $p$ to be:
+
+\begin{align*}
+  er(p) = \frac{|p_{empirical} - p_{analytical}|}{p_{analytical}}
+\end{alignn*}
+
+```{r}
+param_dat <- data.frame(n=ns, xslope=xsl_er, yslope=ysl_er, zstd=zstd_er, qstd=qstd_er)
+param_dat <- as.data.frame.array(melt(param_dat, id=c("n")))
+ggplot(param_dat, aes(x=n, y=value, color=variable)) +
+  geom_line() +
+  scale_color_discrete(name="parameter", breaks=c("xslope", "yslope", "zstd", "qstd"),
+                      labels=lapply(c("X slope", "Y slope", "$\\sigma_z$", "$\\sigma_q$"), TeX)) +
+  xlab("Number of Samples") +
+  ylab("Normalized Parameter Estimate Error") +
+  ggtitle("Analyzing Convergence of Mixed-Effects Model Estimated parameters to Truths")
+```
+
+Additionally, we verify that tour model fit accounting for parameter `Q` is better than the model without `Q`. We do this in two ways:
++ verify that the difference between the model AIC of the model with `Q`, $A_m$, is consistently less than the model AIC of the model without `Q`, $A_n$, and that as we increase sample size, the model with `Q` is a better and better fit (and hence, that the difference $A_m - A_n$ increases in magnitude and becomes more negative)
++ verify that the $p$-value of the model with `Q` is significant, and approaches $0$ as our sample size increases
+we can visualize the plots below:
+
+```{r}
+dat_aicdiff <- data.frame(n=ns, diff=aic_diff)
+ggplot(dat_aicdiff, aes(x=n, y=diff)) +
+  geom_line() +
+  xlab("Number of Samples") +
+  ylab(TeX("$A_m - A_n$")) +
+  ggtitle(TeX("Comparing Model fit with $Q$ with null model without $Q$"))
+```
+
+as we can see, the model fits better and better with $Q$ as we increase the number of samples, which intuitively makes sense since we have more and more samples.
+
+```{r}
+dat_aicpr <- data.frame(n=ns, pr=aic_pr)
+ggplot(dat_aicpr, aes(x=n, y=pr)) +
+  geom_line() +
+  xlab("Number of Samples") +
+  ylab(TeX("p-value")) +
+  ggtitle(TeX("Significance of including $Q$ in the model"))
+```
+
+as we can see, $Q$ impacts our observed data, with $p \rightarrow 0$ rapidly as sample size increases.
 
 # Real Data
 
 ## Diffusion
 
-```{r, eval=FALSE}
+```{r}
+nroi = 70
+atlases = c("desikan")
+dwi.dsets = c('BNU1', 'BNU3', 'HNU1', 'KKI2009', 'NKI1', 'Templeton114', 'SWU4')
 
-dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
-
-graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', datasets = dsets, atlases = c('desikan'), gname = "graphs", fmt='edgelist', rtype='array')
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', datasets = dwi.dsets,
+                                            atlases = atlases, gname = "graphs", fmt='edgelist', rtype='array')
 graphs = graphobj$graphs
 ```
 
-```{r, warnings=FALSE, eval=FALSE}
+```{r, warning=FALSE}
 gcpy = graphs
 datasets = graphobj$dataset
 subjects = graphobj$subjects
 sessions = graphobj$sessions
 
 parse_class <- function(basepath, dsets, subjects) {
-
-sex = list()
-disease = list()
-age = list()
-include = c()
-for (dset in dsets) {
-path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
-tab = read.csv(path_to_file)
-tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
-tab$SEX = tab$SEX == 2
-tab = tab[complete.cases(tab$SEX),]
-tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
-for (idx in 1:dim(tab)[1]) {
-  subid = toString(tab[idx,]$SUBID)
-  sex[[subid]] = tab[idx,]$SEX
-  age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
-  disease[[subid]] = tab[idx,]$DSM_IV_TR
-}
-}
-
-sclass = array(NaN, dim=c(length(subjects)))
-ageclass = sclass
-diseaseclass = sclass
-for (i in 1:length(subjects)) {
-  subject = subjects[i]
-  subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
-  idx = which(names(sex) == subid)
-  if (length(idx) >= 1) {
-    sclass[i] <- sex[[subid]]
-    ageclass[i] <- age[[subid]]
-    diseaseclass[i] <- disease[[subid]]
-  }
-}
-return(list(sex=sclass, age=ageclass, disease=diseaseclass))
-}
-
-sexpath = '/home/eric/Documents/research/ndmg-repos/ndmg-paper/code/fngs_class/'
-class = parse_class(sexpath, dsets, subjects)
-sexs = class$sex
-diseases = class$disease
-ages = class$age
-
-graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
-datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
-subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
-sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
-ager = ages[!is.nan(ages) & !is.nan(sexs)]
-sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
-```
-
-```{r, eval=FALSE}
-AIC.model = array(0, dim=c(70, 70))
-AIC.null = array(0, dim=c(70, 70))
-dcoef = array(0, dim=c(70, 70))
-test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
-
-for (i in 1:69) {
-  for (j in (i+1):70) {
-    test_dat$dat <- graphs[,i,j]
-    AIC.model[i, j] <- AIC(lmer(dat~subject + (1 | dataset), data=test_dat, REML=FALSE))
-    AIC.null[i, j] <- AIC(lm(dat~subject, data=test_dat))
-  }
-}
-
-AIC.model <- AIC.model + t(AIC.model)
-AIC.null <- AIC.null + t(AIC.null)
-```
-
-We can plot the density estimate between the :
-  
-```{r, eval=FALSE}
-dcoef[is.nan(dcoef)] <- 0
-correction <- 1/apply(VC, c(1,2), sum)
-correction[is.infinite(correction)] = 1
-for (i in 1:5){
-  dat <- VC[,,i]*correction
-  print(fmriu.plot.plot_graph(dat,  legend.name='percent', title=sprintf("DWI %s variance percentage, mean=%.3f", var[i],
-                                                                         mean(dat[!is.nan(dat)])), limits = c(min(dat), max(dat))))
-}
-print(fmriu.plot.plot_graph(dcoef,  legend.name='percent', title=sprintf("DWI dependability of model, mean=%.3f",mean(dcoef[!is.nan(dcoef)])),
-                            limits=c(min(dcoef), max(dcoef))))
-```
-
-Below, we sum across dependability, obtaining the per-vertex summed dependability scores. We plot the per-vertex dependability scores, with Blue for low dependability scores and Green for higher dependability scores:
-  
-```{r, eval=FALSE}
-
-dvertices = apply(dcoef, 1, sum)
-nvertices = apply(VC[,,2]*correction, 1, sum)
-
-# atlas is a oro.nifti image
-plot_brain_overlay <- function(atlas, reference, values) {
-  ov <- atlas
-  # sort the rois so that they go low to small, which is what pipeline outputs
-  roimap <- sort(unique(array(atlas@.Data)))
-  roimap <- roimap[2:length(roimap)]  # ignore 0 valued roi (no region)
-  for (roi in 1:length(values)) {
-    if (is.nan(values[roi])) {
-      ov@.Data[round(atlas@.Data) == roimap[roi]] = 0
-    } else {
-      ov@.Data[round(atlas@.Data) == roimap[roi]] = values[roi]
-    }
-  }
-  overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(min(values), max(values)),
-          col.y=brewer.pal(n = 8, name = "Reds"))
-}
-
-parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan_res-2x2x2.nii.gz')
-template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_t1w_res-2x2x2.nii.gz')
-plot_brain_overlay(parc, template, dvertices)
-```
-
-As we can see, it appears as though the more dependable edges are the edges in the upper cortical regions. Below, we show the vertices colored by the summed (across edges similar to before) percent variance captured by the dataset covariates under the g-study:
-  
-```{r, eval=FALSE}
-plot_brain_overlay(parc, template, nvertices)
-```
-
-the lower sub-cortical regions tend to show higher percent variance captured by the dataset regressors, indicating they may be more explained by batch effects than higher cortical areas.
-
-## Functional
-
-```{r, eval=FALSE}
-require(fmriutils)
-require(VCA)
-require(stringr)
-
-dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8', 'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
-
-graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = dsets, atlases = c('desikan-2mm'), fmt='edgelist', rtype='array')
-graphs = graphobj$graphs
-```
-
-```{r, warnings=FALSE, eval=FALSE}
-gcpy = graphs
-datasets = graphobj$dataset
-subjects = graphobj$subjects
-sessions = graphobj$sessions
-
-parse_class <- function(basepath, dsets, subjects) {
-  
   sex = list()
-  disease = list()
+  # disease = list()
   age = list()
   include = c()
   for (dset in dsets) {
     path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
     tab = read.csv(path_to_file)
     tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
-    tab$SEX = tab$SEX == 2
+    if (dset == 'KKI2009') {
+      sexm <- 'M'
+    } else if (dset == 'Templeton114') {
+      sexm <- 1
+    } else {
+      sexm <- 2
+    }
+    tab$AGE_AT_SCAN_1 <- factor(tab$AGE_AT_SCAN_1)
+    tab$SEX = tab$SEX == sexm
     tab = tab[complete.cases(tab$SEX),]
     tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
     for (idx in 1:dim(tab)[1]) {
       subid = toString(tab[idx,]$SUBID)
       sex[[subid]] = tab[idx,]$SEX
       age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
-      disease[[subid]] = tab[idx,]$DSM_IV_TR
+      # disease[[subid]] = tab[idx,]$DSM_IV_TR
     }
   }
   
   sclass = array(NaN, dim=c(length(subjects)))
   ageclass = sclass
-  diseaseclass = sclass
+  # diseaseclass = sclass
   for (i in 1:length(subjects)) {
     subject = subjects[i]
     subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
@@ -400,59 +385,84 @@ parse_class <- function(basepath, dsets, subjects) {
     if (length(idx) >= 1) {
       sclass[i] <- sex[[subid]]
       ageclass[i] <- age[[subid]]
-      diseaseclass[i] <- disease[[subid]]
+      # diseaseclass[i] <- disease[[subid]]
     }
   }
-  return(list(sex=sclass, age=ageclass, disease=diseaseclass))
+  return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
 }
 
-sexpath = '/home/eric/Documents/research/ndmg-repos/ndmg-paper/code/fngs_class/'
-class = parse_class(sexpath, dsets, subjects)
+sexpath = '/home/eric/Documents/research/MGC-repos/fmribatch_notes/data/phenotypic_data/'
+class = parse_class(sexpath, dwi.dsets, subjects)
 sexs = class$sex
-diseases = class$disease
+# dwi.diseases = class$disease
 ages = class$age
 
-graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
-datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
-subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
-sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
-ager = ages[!is.nan(ages) & !is.nan(sexs)]
-sexr = sexs[!is.nan(ages) & !is.nan(sexs)]
+dwi.graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+dwi.datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+dwi.subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+dwi.sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+dwi.ages = ages[!is.nan(ages) & !is.nan(sexs)]
+dwi.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
 ```
 
-```{r, eval=FALSE}
-AIC.model = array(0, dim=c(70, 70))
-AIC.null = array(0, dim=c(70, 70))
-test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects, age=ages, dat=array(NaN, dim=c(length(subjects))))
+```{r, warning=FALSE}
+dwi.AIC.model = array(0, dim=c(nroi, nroi))
+dwi.AIC.null = array(0, dim=c(nroi, nroi))
+dwi.varest <- array(0, dim=c(nroi, nroi, 3))  # first for subject variance, second for dataset variance, third is error
+test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects,
+                      age=ages, dat=array(NaN, dim=c(length(subjects))))
+dwi.dset_p <- array(0, dim=c(nroi, nroi))
 
-for (i in 1:69) {
-  for (j in (i+1):70) {
+for (i in 1:(nroi - 1)) {
+  for (j in (i+1):nroi) {
     test_dat$dat <- graphs[,i,j]
-    AIC.model[i, j] <- AIC(lmer(dat~subject + (1 | dataset), test_dat, REML=FALSE))
-    AIC.null[i, j] <- AIC(lm(dat~subject, test_dat))
+    tryCatch({
+      fit.model <- lmer(dat~sex + age + (1 | subject) + (1 | dataset), data=test_dat, REML=FALSE)
+      fit.null <- lmer(dat~sex + age + (1 | subject), data=test_dat, REML=FALSE)
+      dwi.AIC.model[i, j] <- AIC(fit.model)
+      dwi.AIC.null[i, j] <- AIC(fit.null)
+      modelsum <- summary(fit.model)
+      dwi.varest[i,j,1] <- attributes(modelsum$varcor$subject)$stddev
+      dwi.varest[i,j,2] <- attributes(modelsum$varcor$dataset)$stddev
+      dwi.varest[i,j,3] <- modelsum$sigma
+      dwi.dset_p[i, j] <- anova(fit.model, fit.null)$`Pr(>Chisq)`[2]
+    }, error=function(e) {
+    })
   }
 }
 
-AIC.model <- AIC.model + t(AIC.model)
-AIC.null <- AIC.null + t(AIC.null)
+dwi.AIC.model <- dwi.AIC.model + t(dwi.AIC.model)
+dwi.AIC.null <- dwi.AIC.null + t(dwi.AIC.null)
+dwi.varest[,,1] <- dwi.varest[,,1] + t(dwi.varest[,,1])
+dwi.varest[,,2] <- dwi.varest[,,2] + t(dwi.varest[,,2])
+dwi.varest[,,3] <- dwi.varest[,,3] + t(dwi.varest[,,3])
+dwi.dset_p <- dwi.dset_p + t(dwi.dset_p)
 ```
 
-Per effect, we can plot the distribution of $\delta$:
+We can plot the percent variance per random component:
   
-```{r, eval=FALSE}
-AIC.delta <- AIC.model - AIC.null
-aic.distr.mod = density(as.numeric(AIC.delta))
+```{r}
+varsrc <- c("Subject", "Dataset", "Residual")
+dwi.varest[is.nan(dwi.varest)] <- 0
+varcorrect <- 1/apply(dwi.varest, c(1,2), sum)
+varcorrect[is.infinite(varcorrect)] = 1
+for (i in 1:3){
+  dat <- dwi.varest[,,i]*varcorrect
+  print(fmriu.plot.plot_graph(dat,  legend.name='percent', title=sprintf("DWI %s variance percentage, mean=%.3f", varsrc[i],
+                                                                         mean(dat[!is.nan(dat)])), limits = c(0, 1)))
+}
 ```
 
-Below, we sum across dependability, obtaining the per-vertex summed dependability scores. We plot the per-vertex dependability scores, with Blue for low dependability scores and Green for higher dependability scores:
+And we can look at the probability that the dataset is a significant random-effect in the model:
+
+```{r}
+
+print(fmriu.plot.plot_graph(dwi.dset_p,  legend.name='percent', title="Probability of Dataset being a Significant RE", limits = c(0, 1)))
+```
+
+Below, we plot the per-vertex average variance percentage, with respect to subject, dataset, and residual:
   
-```{r, eval=FALSE}
-require(RColorBrewer)
-require(oro.nifti)
-
-dvertices = apply(dcoef, 1, sum)
-nvertices = apply(VC[,,2]*correction, 1, sum)
-
+```{r}
 # atlas is a oro.nifti image
 plot_brain_overlay <- function(atlas, reference, values) {
   ov <- atlas
@@ -466,17 +476,232 @@ plot_brain_overlay <- function(atlas, reference, values) {
       ov@.Data[round(atlas@.Data) == roimap[roi]] = values[roi]
     }
   }
-  overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(min(values), max(values)),
+  overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(0, length(values)),
           col.y=brewer.pal(n = 8, name = "Reds"))
 }
+parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan-res-2x2x2.nii.gz')
+template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_res-2x2x2_T1w.nii.gz')
 
-parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan_res-2x2x2.nii.gz')
-template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_t1w_res-2x2x2.nii.gz')
-plot_brain_overlay(parc, template, dvertices)
-```
-As we can see, it appears as though the more dependable edges are the edges in the upper cortical regions. Below, we show the vertices colored by the summed (across edges similar to before) percent variance captured by the dataset covariates under the g-study:
-```{r, eval=FALSE}
-plot_brain_overlay(parc, template, nvertices)
+for (i in 1:3) {
+  vertvar = apply(dwi.varest[,,i]*varcorrect, 1, sum)
+  print(varsrc[i])
+  print(plot_brain_overlay(parc, template, vertvar))
+}
 ```
 
-the lower sub-cortical regions tend to show higher percent variance captured by the dataset regressors, indicating they may be more explained by batch effects than higher cortical areas. 
+Finally, we look at the model fit including the `dataset` parameter and without:
+
+```{r}
+dwi.AIC.model <- as.vector(dwi.AIC.model[!is.infinite(dwi.AIC.model) & ! is.infinite(dwi.AIC.null)])
+dwi.AIC.null <- as.vector(dwi.AIC.null[!is.infinite(dwi.AIC.null) & !is.infinite(dwi.AIC.model)])
+diff = dwi.AIC.model - dwi.AIC.null
+  
+dat <- data.frame(model="difference", diff=diff)
+
+ggplot(dat, aes(diff, color=model, fill=model)) +
+  geom_density() +
+  xlim(-100, 100) +
+  xlab(TeX('$|A_m - A_n|$')) +
+  ggtitle(sprintf('Mean difference between Model and Null %.3f', mean(diff))) +
+  theme(legend.position=NaN)
+```
+
+as we can see, the mean of the differences appears to be slightly negative, but the peak is slightly positive. As we can see, the data is clearly non-gaussian. As such, the $T$-test may not be appropriate. We use the Wilcoxon Signed-Rank Test to examine whether the model with the `dataset` random-effect fits significantly better than the null model without the `dataset` random-effect (that is, the AIC is significantly lower):
+
+```{r}
+wilcox.test(dwi.AIC.model, dwi.AIC.null, alternative="less", paired=TRUE)
+```
+
+as we can see, we obtain a $p$-value of near $0$ indicating a significantly better fit at $\alpha=0.5$.
+
+## Functional
+
+```{r}
+nroi = 70
+atlases = c('desikan-2mm')
+require(fmriutils)
+require(VCA)
+require(stringr)
+
+fmri.dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS5', 'IPCAS6', 'IPCAS8',
+               'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = fmri.dsets,
+                                            atlases = atlases, fmt='edgelist', rtype='array')
+graphs = graphobj$graphs
+```
+
+```{r, warning=FALSE}
+gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+parse_class <- function(basepath, dsets, subjects) {
+  sex = list()
+  # disease = list()
+  age = list()
+  include = c()
+  for (dset in dsets) {
+    path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
+    tab = read.csv(path_to_file)
+    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+    if (dset == 'KKI2009') {
+      sexm <- 'M'
+    } else if (dset == 'Templeton114') {
+      sexm <- 1
+    } else {
+      sexm <- 2
+    }
+    tab$AGE_AT_SCAN_1 <- factor(tab$AGE_AT_SCAN_1)
+    tab$SEX = tab$SEX == sexm
+    tab = tab[complete.cases(tab$SEX),]
+    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+    for (idx in 1:dim(tab)[1]) {
+      subid = toString(tab[idx,]$SUBID)
+      sex[[subid]] = tab[idx,]$SEX
+      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+      # disease[[subid]] = tab[idx,]$DSM_IV_TR
+    }
+  }
+  
+  sclass = array(NaN, dim=c(length(subjects)))
+  ageclass = sclass
+  # diseaseclass = sclass
+  for (i in 1:length(subjects)) {
+    subject = subjects[i]
+    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
+    idx = which(names(sex) == subid)
+    if (length(idx) >= 1) {
+      sclass[i] <- sex[[subid]]
+      ageclass[i] <- age[[subid]]
+      # diseaseclass[i] <- disease[[subid]]
+    }
+  }
+  return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
+}
+
+sexpath = '/home/eric/Documents/research/MGC-repos/fmribatch_notes/data/phenotypic_data/'
+class = parse_class(sexpath, fmri.dsets, subjects)
+sexs = class$sex
+# dwi.diseases = class$disease
+ages = class$age
+
+fmri.graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+fmri.datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+fmri.subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+fmri.sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+fmri.ages = ages[!is.nan(ages) & !is.nan(sexs)]
+fmri.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
+```
+
+```{r, warning=FALSE}
+fmri.AIC.model = array(0, dim=c(nroi, nroi))
+fmri.AIC.null = array(0, dim=c(nroi, nroi))
+fmri.varest <- array(0, dim=c(nroi, nroi, 3))  # first for subject variance, second for dataset variance, third is error
+test_dat = data.frame(sex=sexs, dataset=datasets, session=sessions, subject=subjects,
+                      age=ages, dat=array(NaN, dim=c(length(subjects))))
+fmri.dset_p <- array(0, dim=c(nroi, nroi))
+
+for (i in 1:(nroi - 1)) {
+  for (j in (i+1):nroi) {
+    test_dat$dat <- graphs[,i,j]
+    tryCatch({
+      fit.model <- lmer(dat~sex + age + (1 | subject) + (1 | dataset), data=test_dat, REML=FALSE)
+      fit.null <- lmer(dat~sex + age + (1 | subject), data=test_dat, REML=FALSE)
+      fmri.AIC.model[i, j] <- AIC(fit.model)
+      fmri.AIC.null[i, j] <- AIC(fit.null)
+      modelsum <- summary(fit.model)
+      fmri.varest[i,j,1] <- attributes(modelsum$varcor$subject)$stddev
+      fmri.varest[i,j,2] <- attributes(modelsum$varcor$dataset)$stddev
+      fmri.varest[i,j,3] <- modelsum$sigma
+      fmri.dset_p[i, j] <- anova(fit.model, fit.null)$`Pr(>Chisq)`[2]
+    }, error=function(e) {
+    })
+  }
+}
+
+fmri.AIC.model <- fmri.AIC.model + t(fmri.AIC.model)
+fmri.AIC.null <- fmri.AIC.null + t(fmri.AIC.null)
+fmri.varest[,,1] <- fmri.varest[,,1] + t(fmri.varest[,,1])
+fmri.varest[,,2] <- fmri.varest[,,2] + t(fmri.varest[,,2])
+fmri.varest[,,3] <- fmri.varest[,,3] + t(fmri.varest[,,3])
+fmri.dset_p <- fmri.dset_p + t(fmri.dset_p)
+```
+
+We can plot the percent variance per random component:
+  
+```{r}
+varsrc <- c("Subject", "Dataset", "Residual")
+fmri.varest[is.nan(fmri.varest)] <- 0
+varcorrect <- 1/apply(fmri.varest, c(1,2), sum)
+varcorrect[is.infinite(varcorrect)] = 1
+for (i in 1:3){
+  dat <- fmri.varest[,,i]*varcorrect
+  print(fmriu.plot.plot_graph(dat,  legend.name='percent',
+                             title=sprintf("fMRI %s variance percentage, mean=%.3f", varsrc[i],
+                                           mean(dat[!is.nan(dat)])), limits = c(0, 1)))
+}
+```
+
+And we can look at the probability that the dataset is a significant random-effect in the model:
+
+```{r}
+
+print(fmriu.plot.plot_graph(fmri.dset_p,  legend.name='percent',
+                            title="Probability of Dataset being a Significant RE", limits = c(0, 1)))
+```
+
+Below, we plot the per-vertex average variance percentage, with respect to subject, dataset, and residual:
+  
+```{r}
+# atlas is a oro.nifti image
+plot_brain_overlay <- function(atlas, reference, values) {
+  ov <- atlas
+  # sort the rois so that they go low to small, which is what pipeline outputs
+  roimap <- sort(unique(array(atlas@.Data)))
+  roimap <- roimap[2:length(roimap)]  # ignore 0 valued roi (no region)
+  for (roi in 1:length(values)) {
+    if (is.nan(values[roi])) {
+      ov@.Data[round(atlas@.Data) == roimap[roi]] = 0
+    } else {
+      ov@.Data[round(atlas@.Data) == roimap[roi]] = values[roi]
+    }
+  }
+  overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(0, length(values)),
+          col.y=brewer.pal(n = 8, name = "Reds"))
+}
+parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan-res-2x2x2.nii.gz')
+template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_res-2x2x2_T1w.nii.gz')
+
+for (i in 1:3) {
+  vertvar = apply(fmri.varest[,,i]*varcorrect, 1, sum)
+  print(varsrc[i])
+  plot_brain_overlay(parc, template, vertvar)
+}
+```
+
+Finally, we look at the model fit including the `dataset` parameter and without:
+
+```{r}
+fmri.AIC.model <- as.vector(fmri.AIC.model[!is.infinite(fmri.AIC.model) & ! is.infinite(fmri.AIC.null)])
+fmri.AIC.null <- as.vector(fmri.AIC.null[!is.infinite(fmri.AIC.null) & !is.infinite(fmri.AIC.model)])
+diff = fmri.AIC.model - fmri.AIC.null
+  
+dat <- data.frame(model="difference", diff=diff)
+
+ggplot(dat, aes(diff, color=model, fill=model)) +
+  geom_density() +
+  xlim(-100, 100) +
+  xlab(TeX('$|A_m - A_n|$')) +
+  ggtitle(sprintf('Mean difference between Model and Null %.3f', mean(diff))) +
+  theme(legend.position=NaN)
+```
+
+as we can see, the mean of the differences appears to be slightly negative, but the peak is slightly positive. As we can see, the data is clearly non-gaussian. As such, the $T$-test may not be appropriate. We use the Wilcoxon Signed-Rank Test to examine whether the model with the `dataset` random-effect fits significantly better than the null model without the `dataset` random-effect (that is, the AIC is significantly lower):
+
+```{r}
+wilcox.test(fmri.AIC.model, fmri.AIC.null, alternative="less", paired=TRUE)
+```
+
+as we can see, we obtain a $p$-value of near $0$ indicating a significantly better fit at $\alpha=0.5$.
