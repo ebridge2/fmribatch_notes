@@ -1,11 +1,11 @@
 ---
-title: "Mixed-Effects Modelling for fMRI Batch Investigations"
+title: "Mixed-Effects Modelling for MRI Batch Investigations"
 author: "Eric Bridgeford"
 date: "October 12, 2017"
 output: html_document
 ---
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 # load packages
 #==========================#
 require(fmriutils)
@@ -17,6 +17,8 @@ require(oro.nifti)
 require(reshape2)
 require(latex2exp)
 require(ggplot2)
+require(Rmisc)
+
 # functions
 #==========================#
 
@@ -214,22 +216,22 @@ show that our parameters for the intercepts and estimated variance converge with
 ```
 
 ```{r, warning=FALSE}
-no <- 15 # number of steps we will have
-ns <- xscale.log2(a=4, b=9, n=no)  # number of samples
+no <- 8 # number of steps we will have
+ns <- xscale.log2(a=7, b=10, n=no)  # number of samples
 nrep <- 50  # number of replicates per n for our simulations to smooth our plots a bit
-xsl <- 20  # slope of x
+xsl <- 10  # slope of x
 ysl <- 5  # slope of y
-zstd <- 6  # std of z
-qstd <- 12  # std of q
-ervar <- 5  # error term
-nz <- 20  # number of possible z
-nq <- 10  # number of possible q
-aic_diff <- array(0, dim=c(no))  # make sure the model always fits better with q than without
-xsl_er <- array(0, dim=c(no))
-ysl_er <- array(0, dim=c(no))
-zstd_er <- array(0, dim=c(no))
-qstd_er <- array(0, dim=c(no))
-aic_pr <- array(0, dim=c(no))
+zstd <- 12  # std of z
+qstd <- 10  # std of q
+ervar <- 1  # error term
+np <- 8  # resolution of our parameter sets
+npars <- round(seq(10, 100, length.out=8))
+aic_diff <- array(0, dim=c(no, np))  # make sure the model always fits better with q than without
+xsl_er <- array(0, dim=c(no, np))
+ysl_er <- array(0, dim=c(no, np))
+zstd_er <- array(0, dim=c(no, np))
+qstd_er <- array(0, dim=c(no, np))
+aic_pr <- array(0, dim=c(no, np))
 
 for (i in 1:length(ns)) {
   n <- ns[i]
@@ -239,46 +241,41 @@ for (i in 1:length(ns)) {
   qstder <- array(0, dim=c(nrep))
   aicdiff <- array(0, dim=c(nrep))
   aicpr <- array(0, dim=c(nrep))
-  for (j in 1:nrep) {
-    X <- rbinom(n=n, size=1, p=0.4)  # choose the xs as bernoulli
-    Y = rnorm(n=n, mean=50, sd=20)  # choose the ys as continuous w mean 50
-    # choose the means of the z and q labels
-    zmeans <- rnorm(n=nz, mean=0, sd=zstd)
-    qmeans <- rnorm(n=nq, mean=0, sd=qstd)
-    # assign labels to zs and qs for each n
-    zsamp <- sample(nz, size=n, replace=TRUE)
-    qsamp <- sample(nq, size=n, replace=TRUE)
-    # assign the values of the zs and qs
-    Z <- array(0, dim=c(n))
-    Q <- array(0, dim=c(n))
-    for (k in 1:nz) {
-      idxz <- zsamp == k
-      Z[idxz] <- rnorm(n=sum(idxz), mean=zmeans[k], sd=2)  # fix error sd=2
+  for (k in 1:length(npars)) {
+    nz <- npars[k]; nq <- npars[k]
+    for (j in 1:nrep) {
+      X <- rbinom(n=n, size=1, p=0.4)  # choose the xs as bernoulli
+      Y = rnorm(n=n, mean=50, sd=10)  # choose the ys as continuous w mean 50
+      # choose the means of the z and q labels
+      zmeans <- rnorm(n=nz, mean=0, sd=zstd)
+      qmeans <- rnorm(n=nq, mean=0, sd=qstd)
+      # assign labels to each n randomly
+      zsamp <- sample(nz, size=n, replace=TRUE)
+      qsamp <- sample(nq, size=n, replace=TRUE)
+      # for each n, assign a random z and q label, and use the means computed previously
+      Z <- zmeans[zsamp]
+      Q <- qmeans[qsamp]
+      eps <- rnorm(n=n, mean=0, sd=ervar)
+      result <- xsl*X + ysl*Y + Z + Q + eps
+      data <- data.frame(d=result, x=X, y=Y, z=zsamp, q=qsamp)
+      fit.model <- lmer(d ~ x + y + (1 | z) + (1 | q), data, REML=FALSE)  # model as above; use ML estimate
+      modsum <- summary(fit.model)  # summarize the model
+      xsler[j] <- abs(modsum$coefficients[2,1] - xsl)/xsl  # x slope er
+      ysler[j] <- abs(modsum$coefficients[3,1] - ysl)/ysl  # y slope er
+      zstder[j] <- abs(attributes(modsum$varcor$z)$stddev - zstd)/zstd  # z variance er
+      qstder[j] <- abs(attributes(modsum$varcor$q)$stddev - qstd)/qstd  # q variance er
+      fit.null <- lmer(d ~ x + y + (1 | z), data, REML=FALSE)  # model without q
+      anres <- anova(fit.null, fit.model)  # compare the two models to check that the model with q is a better fit
+      aicdiff[j] <- anres$AIC[2] - anres$AIC[1]  # model (which is [2]) should have a lower AIC, so we expect this to get more negative
+      aicpr[j] <- anres$`Pr(>Chisq)`[2]  # pval of model with q should be near zero (significant WHP)
     }
-    for (k in 1:nq) {
-      idxq <- qsamp == k
-      Q[idxq] <- rnorm(n=sum(idxq), mean=qmeans[k], sd=2)  # fix error sd=2
-    }
-    eps <- rnorm(n=n, mean=0, sd=ervar)
-    result <- xsl*X + ysl*Y + Z + Q + eps
-    data <- data.frame(d=result, x=X, y=Y, z=zsamp, q=qsamp)
-    fit.model <- lmer(d ~ x + y + (1 | z) + (1 | q), data, REML=FALSE)  # model as above; use ML estimate
-    modsum <- summary(fit.model)  # summarize the model
-    xsler[j] <- abs(modsum$coefficients[2,1] - xsl)/xsl  # x slope er
-    ysler[j] <- abs(modsum$coefficients[3,1] - ysl)/ysl  # y slope er
-    zstder[j] <- abs(attributes(modsum$varcor$z)$stddev - zstd)/zstd  # z variance er
-    qstder[j] <- abs(attributes(modsum$varcor$q)$stddev - qstd)/qstd  # q variance er
-    fit.null <- lmer(d ~ x + y + (1 | z), data, REML=FALSE)  # model without q
-    anres <- anova(fit.null, fit.model)  # compare the two models to check that the model with q is a better fit
-    aicdiff[j] <- anres$AIC[2] - anres$AIC[1]  # model (which is [2]) should have a lower AIC, so we expect this to get more negative
-    aicpr[j] <- anres$`Pr(>Chisq)`[2]  # pval of model with q should be near zero (significant WHP)
+    xsl_er[i, k] <- mean(xsler)
+    ysl_er[i, k] <- mean(ysler)
+    zstd_er[i, k] <- mean(zstder)
+    qstd_er[i, k] <- mean(qstder)
+    aic_diff[i, k] <- mean(aicdiff)
+    aic_pr[i, k] <- mean(aicpr)
   }
-  xsl_er[i] <- mean(xsler)
-  ysl_er[i] <- mean(ysler)
-  zstd_er[i] <- mean(zstder)
-  qstd_er[i] <- mean(qstder)
-  aic_diff[i] <- mean(aicdiff)
-  aic_pr[i] <- mean(aicpr)
 }
 ```
 
@@ -286,46 +283,89 @@ We can visualize the results of our simulation, first checking our parameter est
 
 \begin{align*}
   er(p) = \frac{|p_{empirical} - p_{analytical}|}{p_{analytical}}
-\end{alignn*}
+\end{align*}
+
+We first investigate the convergence of our parameters with respect to various measures of interest to verify that our intuition is correct. We visualize:
++ the convergence of our parameters with respect to sample size, intuitively expecting parameters relating to our fixed effects ($X$ and $Y$ slopes) to converge, whereas we anticipate no convergence of our random-effects parameters ($\sigma_z, \sigma_q$).
++ the convergence of our parameters with respect to the number of possible levels our random-effects can occupy. We expect that with more levels, we will be able to better estimate the variance of our given random-effect
 
 ```{r}
-param_dat <- data.frame(n=ns, xslope=xsl_er, yslope=ysl_er, zstd=zstd_er, qstd=qstd_er)
+param_dat <- data.frame(n=ns, xslope=apply(xsl_er, c(1), mean), yslope=apply(ysl_er, c(1), mean),
+                        zstd=apply(zstd_er, c(1), mean), qstd=apply(qstd_er, c(1), mean))
 param_dat <- as.data.frame.array(melt(param_dat, id=c("n")))
-ggplot(param_dat, aes(x=n, y=value, color=variable)) +
+samp <- ggplot(param_dat, aes(x=n, y=value, color=variable)) +
   geom_line() +
   scale_color_discrete(name="parameter", breaks=c("xslope", "yslope", "zstd", "qstd"),
                       labels=lapply(c("X slope", "Y slope", "$\\sigma_z$", "$\\sigma_q$"), TeX)) +
   xlab("Number of Samples") +
-  ylab("Normalized Parameter Estimate Error") +
-  ggtitle("Analyzing Convergence of Mixed-Effects Model Estimated parameters to Truths")
+  ylim(0, .2) +
+  ylab("Parameter Estimate Error") +
+  ggtitle("Convergence of Parameter Estimates") +
+  theme(legend.position=NaN)
+
+param_dat <- data.frame(n=npars, xslope=apply(xsl_er, c(2), mean), yslope=apply(ysl_er, c(2), mean),
+                        zstd=apply(zstd_er, c(2), mean), qstd=apply(qstd_er, c(2), mean))
+param_dat <- as.data.frame.array(melt(param_dat, id=c("n")))
+cats <- ggplot(param_dat, aes(x=n, y=value, color=variable)) +
+  geom_line() +
+  scale_color_discrete(name="parameter", breaks=c("xslope", "yslope", "zstd", "qstd"),
+                      labels=lapply(c("X slope", "Y slope", "$\\sigma_z$", "$\\sigma_q$"), TeX)) +
+  xlab("Number of Levels") +
+  ylim(0, .2) +
+  ylab("Parameter Estimate Error") +
+  theme(legend.position="bottom")
+
+multiplot(samp, cats, cols=1)
 ```
 
+Of note, we actaully fit our fixed-effects worse as the number of levels increases with fixed sample size. We might anticipate that this is because the model has more and more degrees of freedom for a fixed number of samples, and therefore may not converge as efficiently.
+
 Additionally, we verify that tour model fit accounting for parameter `Q` is better than the model without `Q`. We do this in two ways:
-+ verify that the difference between the model AIC of the model with `Q`, $A_m$, is consistently less than the model AIC of the model without `Q`, $A_n$, and that as we increase sample size, the model with `Q` is a better and better fit (and hence, that the difference $A_m - A_n$ increases in magnitude and becomes more negative)
-+ verify that the $p$-value of the model with `Q` is significant, and approaches $0$ as our sample size increases
-we can visualize the plots below:
++ verify that the difference between the model AIC with `Q`, $A_m$, is consistently less than the model AIC of the model without `Q`, $A_n$, and that as we increase sample size, the model with `Q` is a better and better fit (and hence, that the difference $A_m - A_n$ increases in magnitude and becomes more negative)
++ verify that the difference between the model AIC with `Q`, $A_m$, and the model AIC without `Q`, $A_n$, increases with the number of possible levels. This is because we expect that our model has more and more degrees of freedom, and therefore the model will fit worse and worse including more degrees of freedom (by including the `Q` parameter)
 
 ```{r}
-dat_aicdiff <- data.frame(n=ns, diff=aic_diff)
-ggplot(dat_aicdiff, aes(x=n, y=diff)) +
+dat_aicdiff <- data.frame(n=ns, diff=apply(aic_diff, c(1), mean))
+samp <- ggplot(dat_aicdiff, aes(x=n, y=diff)) +
   geom_line() +
   xlab("Number of Samples") +
   ylab(TeX("$A_m - A_n$")) +
-  ggtitle(TeX("Comparing Model fit with $Q$ with null model without $Q$"))
+  ggtitle("Comparison of Model fit with and without Q")
+
+dat_aicdiff <- data.frame(n=npars, diff=apply(aic_diff, c(2), mean))
+cats <- ggplot(dat_aicdiff, aes(x=n, y=diff)) +
+  geom_line() +
+  xlab("Number of Levels") +
+  ylab(TeX("$A_m - A_n$"))
+
+multiplot(samp, cats, cols=1)
 ```
 
-as we can see, the model fits better and better with $Q$ as we increase the number of samples, which intuitively makes sense since we have more and more samples.
-
+Finally, we look at the significance of including `Q` in the model, anticipating that with $p < 0.05$ we should have the inclusion of `Q` significantly impacting our model fit:
 ```{r}
-dat_aicpr <- data.frame(n=ns, pr=aic_pr)
-ggplot(dat_aicpr, aes(x=n, y=pr)) +
+dat_aicdiff <- data.frame(n=ns, diff=apply(aic_pr, c(1), mean))
+samp <- ggplot(dat_aicdiff, aes(x=n, y=diff)) +
   geom_line() +
   xlab("Number of Samples") +
-  ylab(TeX("p-value")) +
-  ggtitle(TeX("Significance of including $Q$ in the model"))
+  ylab(TeX("$p$")) +
+  ggtitle(TeX("$p$-value of including $Q$ in model")) +
+  ylim(0, .5)
+
+dat_aicdiff <- data.frame(n=npars, diff=apply(aic_pr, c(2), mean))
+cats <- ggplot(dat_aicdiff, aes(x=n, y=diff)) +
+  geom_line() +
+  xlab("Number of Levels") +
+  ylab(TeX("$p$")) +
+  ylim(0, .5)
+
+multiplot(samp, cats, cols=1)
 ```
 
-as we can see, $Q$ impacts our observed data, with $p \rightarrow 0$ rapidly as sample size increases.
+as we can see, `Q` always improves our model significantly with $p < 0.05$. 
+
+## Takeaways
+
+From our simulations, it is clear that we have a tradeoff in terms of the number of samples and the number of levels in our model. To accurately estimate a random-effect, we must have a large number of levels. However, this comes at the expense of decreasing the quality of our model fit as the DOF of the model increases. This leads to poorer convergence of the parameters of our fixed-effects, while simultaneously reducing the accuracy of our model to the true model the data is simulated from. Fortunately, this can be remedied by increasing our sample size. The estimates of our random-effects do not appear to "suffer" as we increase the sample size quite like the estimates of our fixed-effects/model suffered as we increased the number of levels. This means that in order to accurately apply this model to data, we will need a high number of levels per random-effect counter-balanced by a high number of samples.
 
 # Real Data
 
@@ -491,6 +531,9 @@ for (i in 1:3) {
 
 Finally, we look at the model fit including the `dataset` parameter and without:
 
+
+From our simulations, it is clear that we have a tradeoff in terms of the number of samples and the number of levels in our model. To accurately estimate a random-effect, we must have a large number of levels. However, this comes at the expense of decreasing the quality of our model fit as the DOF of the model increases. This leads to poorer convergence of the parameters of our fixed-effects, while simultaneously reducing the accuracy of our model to the true model the data is simulated from. Fortunately, this can be remedied by increasing our sample size. The estimates of our random-effects do not appear to "suffer" as we increase the sample size quite like the estimates of our fixed-effects/model suffered as we increased the number of levels. This means that in order to accurately apply this model to data, we will need a high number of levels per random-effect counter-balanced by a high number of samples.
+
 ```{r}
 dwi.AIC.model <- as.vector(dwi.AIC.model[!is.infinite(dwi.AIC.model) & ! is.infinite(dwi.AIC.null)])
 dwi.AIC.null <- as.vector(dwi.AIC.null[!is.infinite(dwi.AIC.null) & !is.infinite(dwi.AIC.model)])
@@ -506,7 +549,7 @@ ggplot(dat, aes(diff, color=model, fill=model)) +
   theme(legend.position=NaN)
 ```
 
-as we can see, the mean of the differences appears to be slightly negative, but the peak is slightly positive. As we can see, the data is clearly non-gaussian. As such, the $T$-test may not be appropriate. We use the Wilcoxon Signed-Rank Test to examine whether the model with the `dataset` random-effect fits significantly better than the null model without the `dataset` random-effect (that is, the AIC is significantly lower):
+as we can see, the mean of the differences appears to be slightly negative, but the peak is slightly positive. As we can see, the data is clearly non-gaussian. As such, the $T$-test may not be appropriate. We use the Wilcoxon Signed-Rank Test to examine whether the model with the `dataset` random-effect fits significantly better than the null model without the `dataset` random-effect; that is, whether $A_m$ is significantly less than $A_n$:
 
 ```{r}
 wilcox.test(dwi.AIC.model, dwi.AIC.null, alternative="less", paired=TRUE)
@@ -698,7 +741,7 @@ ggplot(dat, aes(diff, color=model, fill=model)) +
   theme(legend.position=NaN)
 ```
 
-as we can see, the mean of the differences appears to be slightly negative, but the peak is slightly positive. As we can see, the data is clearly non-gaussian. As such, the $T$-test may not be appropriate. We use the Wilcoxon Signed-Rank Test to examine whether the model with the `dataset` random-effect fits significantly better than the null model without the `dataset` random-effect (that is, the AIC is significantly lower):
+as we can see, the mean of the differences appears to be slightly negative, but the peak is slightly positive. As we can see, the data is clearly non-gaussian. As such, the $T$-test may not be appropriate. We use the Wilcoxon Signed-Rank Test to examine whether the model with the `dataset` random-effect fits significantly better than the null model without the `dataset` random-effect; is, whether $A_m$ is significantly less than $A_n$:
 
 ```{r}
 wilcox.test(fmri.AIC.model, fmri.AIC.null, alternative="less", paired=TRUE)
