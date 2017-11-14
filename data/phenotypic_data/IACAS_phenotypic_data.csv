@@ -1,0 +1,57 @@
+SUBID,SESSION,AGE_AT_SCAN_1,SEX,DSM_IV_TR,FIQ,VIQ,PIQ,BMI,RESTING_STATE_INSTRUCTION,VISUAL_STIMULATION_CONDITION,RETEST_DESIGN,PRECEDING_CONDITION,RETEST_DURATION,RETEST_UNITS,TIME_OF_DAY,SEASON,SATIETY,LMP,HANDEDNESS
+25457,Baseline,24,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25457,Retest_1,24,1,#,#,#,#,#,#,#,#,0,47,d,#,#,#,#,#
+25458,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25458,Retest_1,24,2,#,#,#,#,#,#,#,#,0,93,d,#,#,#,#,#
+25459,Baseline,25,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25459,Retest_1,25,2,#,#,#,#,#,#,#,#,0,43,d,#,#,#,#,#
+25460,Baseline,24,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25460,Retest_1,24,1,#,#,#,#,#,#,#,#,0,46,d,#,#,#,#,#
+25461,Baseline,25,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25461,Retest_1,25,2,#,#,#,#,#,#,#,#,0,46,d,#,#,#,#,#
+25462,Baseline,24,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25462,Retest_1,24,1,#,#,#,#,#,#,#,#,0,47,d,#,#,#,#,#
+25463,Baseline,28,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25463,Retest_1,28,1,#,#,#,#,#,#,#,#,0,95,d,#,#,#,#,#
+25464,Baseline,26,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25464,Retest_1,26,1,#,#,#,#,#,#,#,#,0,67,d,#,#,#,#,#
+25465,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25465,Retest_1,24,2,#,#,#,#,#,#,#,#,0,105,d,#,#,#,#,#
+25466,Baseline,24,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25466,Retest_1,24,1,#,#,#,#,#,#,#,#,0,86,d,#,#,#,#,#
+25467,Baseline,30,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25467,Retest_1,30,2,#,#,#,#,#,#,#,#,0,87,d,#,#,#,#,#
+25468,Baseline,31,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25468,Retest_1,31,1,#,#,#,#,#,#,#,#,0,63,d,#,#,#,#,#
+25469,Baseline,25,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25469,Retest_1,25,1,#,#,#,#,#,#,#,#,0,39,d,#,#,#,#,#
+25470,Baseline,21,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25470,Retest_1,21,1,#,#,#,#,#,#,#,#,0,42,d,#,#,#,#,#
+25471,Baseline,19,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25471,Retest_1,19,2,#,#,#,#,#,#,#,#,0,42,d,#,#,#,#,#
+25472,Baseline,29,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25472,Retest_1,29,1,#,#,#,#,#,#,#,#,0,34,d,#,#,#,#,#
+25473,Baseline,34,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25473,Retest_1,34,1,#,#,#,#,#,#,#,#,0,64,d,#,#,#,#,#
+25474,Baseline,43,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25474,Retest_1,43,2,#,#,#,#,#,#,#,#,0,36,d,#,#,#,#,#
+25475,Baseline,29,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25475,Retest_1,29,2,#,#,#,#,#,#,#,#,0,26,d,#,#,#,#,#
+25476,Baseline,25,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25476,Retest_1,25,2,#,#,#,#,#,#,#,#,0,112,d,#,#,#,#,#
+25477,Baseline,29,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25477,Retest_1,29,2,#,#,#,#,#,#,#,#,0,343,d,#,#,#,#,#
+25478,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25478,Retest_1,24,2,#,#,#,#,#,#,#,#,0,218,d,#,#,#,#,#
+25479,Baseline,32,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25479,Retest_1,32,2,#,#,#,#,#,#,#,#,0,20,d,#,#,#,#,#
+25480,Baseline,19,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25480,Retest_1,19,1,#,#,#,#,#,#,#,#,0,48,d,#,#,#,#,#
+25481,Baseline,27,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25481,Retest_1,27,2,#,#,#,#,#,#,#,#,0,56,d,#,#,#,#,#
+25482,Baseline,28,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25482,Retest_1,28,1,#,#,#,#,#,#,#,#,0,56,d,#,#,#,#,#
+25483,Baseline,19,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25483,Retest_1,19,1,#,#,#,#,#,#,#,#,0,91,d,#,#,#,#,#
+25484,Baseline,28,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,#,#,#,#,#
+25484,Retest_1,28,1,#,#,#,#,#,#,#,#,0,56,d,#,#,#,#,#

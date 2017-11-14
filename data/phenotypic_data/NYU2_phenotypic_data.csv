@@ -1,0 +1,490 @@
+SUBID,SESSION,AGE_AT_SCAN_1,SEX,DSM_IV_TR,FIQ,VIQ,PIQ,BMI,SELF_HW,RESTING_STATE_INSTRUCTION,VISUAL_STIMULATION_CONDITION,RETEST_DESIGN,PRECEDING_CONDITION,RETEST_DURATION,RETEST_UNITS,TIME_OF_DAY,SEASON,SATIETY,LMP,HANDEDNESS,EYE_STATUS_AT_REST_SCAN
+25000,Baseline,13.25,1,#,100,99,101,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,2,2,0,0,#,open
+25000,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,29,m,2,2,0,0,#,open
+25000,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,80,d,3,3,0,0,#,open
+25001,Baseline,10.76,2,#,138,131,135,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,3,0,0,#,open
+25001,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,3,0,0,#,open
+25001,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,49,d,4,3,0,0,#,open
+25002,Baseline,8.91,1,#,125,117,128,16.12,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25002,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,26,m,4,2,0,0,#,open
+25002,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,57,d,4,3,0,0,#,open
+25003,Baseline,11.38,1,#,102,108,95,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25003,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,26,m,4,2,0,0,#,open
+25003,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,150,d,3,0,0,0,#,open
+25003,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,0,0,0,#,closed
+25004,Baseline,12.44,1,#,124,117,126,15.06,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,open
+25004,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,3,3,0,0,#,open
+25004,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,36,d,3,0,0,0,#,closed
+25004,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,0,0,0,#,open
+25005,Baseline,11.31,1,#,103,115,91,18.82,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,open
+25005,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,15,m,3,3,0,0,#,open
+25005,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,92,d,3,0,0,0,#,open
+25005,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,0,0,0,#,open
+25006,Baseline,8.91,2,#,100,91,109,21.37,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,3,0,0,#,closed
+25006,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,3,0,0,#,open
+25006,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,7,d,4,3,0,0,#,open
+25007,Baseline,12.59,2,#,124,121,120,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,closed
+25007,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,15,m,3,3,0,0,#,open
+25007,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,29,d,3,3,0,0,#,open
+25007,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,3,0,0,#,open
+25008,Baseline,8.04,1,#,101,102,99,14.06,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,open
+25008,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,49,m,3,3,0,0,#,open
+25008,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,21,d,3,3,0,0,#,closed
+25008,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,open
+25009,Baseline,11.92,2,#,111,102,119,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25009,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,1,0,0,#,closed
+25009,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,146,d,3,3,0,0,#,open
+25009,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,16,m,3,3,0,0,#,open
+25010,Baseline,7.55,1,#,99,99,98,16.61,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,2,0,0,#,open
+25010,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,16,m,3,2,0,0,#,closed
+25010,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,266,d,2,1,0,0,#,open
+25011,Baseline,10.21,1,#,94,107,83,16.36,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,0,0,0,#,closed
+25011,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,0,0,0,#,open
+25011,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,70,d,4,1,0,0,#,open
+25011,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25012,Baseline,8.01,2,#,110,117,102,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,0,0,0,#,open
+25012,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,40,m,4,0,0,0,#,open
+25012,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,51,d,2,1,0,0,#,closed
+25012,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,25,m,2,1,0,0,#,open
+25013,Baseline,8.15,2,#,118,115,117,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25013,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25013,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,56,d,3,2,0,0,#,closed
+25013,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,25,m,3,2,0,0,#,open
+25014,Baseline,8.59,2,#,122,131,108,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,2,1,0,0,#,open
+25014,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,1,0,0,#,closed
+25014,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,84,d,3,2,0,0,#,open
+25014,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,23,m,3,2,0,0,#,open
+25015,Baseline,11.69,2,#,116,113,116,15.36,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,2,3,0,0,#,open
+25015,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,2,3,0,0,#,open
+25015,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,14,d,3,3,0,0,#,open
+25015,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,26,m,3,3,0,0,#,closed
+25016,Baseline,10.82,1,#,106,99,111,22.14,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,2,0,0,#,closed
+25016,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,2,0,0,#,open
+25016,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,15,d,3,3,0,0,#,open
+25016,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,3,0,0,#,open
+25017,Baseline,7.63,1,#,111,110,108,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,2,3,0,0,#,closed
+25017,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,27,m,2,3,0,0,#,open
+25017,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,203,d,3,1,0,0,#,open
+25017,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25018,Baseline,13.28,2,#,87,93,86,18.19,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,open
+25018,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,24,m,3,3,0,0,#,open
+25018,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,162,d,4,1,0,0,#,open
+25018,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,1,0,0,#,open
+25019,Baseline,8.56,1,#,100,100,99,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,closed
+25019,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,2,0,0,#,open
+25019,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,124,d,3,3,0,0,#,open
+25019,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,25,m,3,3,0,0,#,open
+25020,Baseline,10.46,2,#,119,118,116,14.64,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25020,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,24,m,4,2,0,0,#,open
+25020,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,27,d,3,2,0,0,#,open
+25021,Baseline,7.91,1,#,109,112,104,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,2,0,#,#,2,0,0,0,#,closed
+25021,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,132,d,2,1,0,0,#,open
+25021,Retest_2,#,#,#,#,#,#,#,#,#,#,#,1,21,m,2,1,0,0,#,open
+25022,Baseline,12.49,2,#,126,109,137,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,closed
+25022,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,open
+25022,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,31,d,2,3,0,0,#,open
+25022,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,16,m,2,3,0,0,#,open
+25023,Baseline,12.25,2,#,123,117,124,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,2,0,#,#,3,3,0,0,#,closed
+25023,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,11,m,3,3,0,0,#,#
+25023,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,140,d,3,1,0,0,#,open
+25023,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,57,m,3,1,0,0,#,open
+25023,Retest_4,#,#,#,#,#,#,#,#,#,#,#,0,202,d,3,1,0,0,#,closed
+25023,Retest_5,#,#,#,#,#,#,#,#,#,#,#,1,24,m,3,1,0,0,#,open
+25024,Baseline,9.75,2,#,124,133,109,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25024,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,50,m,3,1,0,0,#,open
+25024,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,62,d,2,2,0,0,#,open
+25024,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,25,m,2,2,0,0,#,open
+25025,Baseline,12.45,1,#,98,90,104,16.72,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,2,0,0,0,#,closed
+25025,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,44,m,2,0,0,0,#,open
+25025,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,70,d,2,1,0,0,#,closed
+25025,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,31,m,2,1,0,0,#,open
+25025,Retest_4,#,#,#,#,#,#,#,#,#,#,#,0,203,d,3,2,0,0,#,open
+25025,Retest_5,#,#,#,#,#,#,#,#,#,#,#,0,15,m,3,2,0,0,#,open
+25026,Baseline,9.54,1,#,116,134,98,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,2,0,#,#,4,2,0,0,#,closed
+25026,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,19,d,2,2,0,0,#,open
+25026,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,7,m,2,2,0,0,#,open
+25027,Baseline,39.95,2,#,104,104,103,22.69,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,2,0,0,#,open
+25027,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,2,0,0,#,open
+25027,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,17,d,4,3,0,0,#,closed
+25027,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,3,0,0,#,open
+25028,Baseline,42.94,2,#,92,94,92,21.52,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,0,0,0,#,open
+25028,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,0,0,0,#,open
+25028,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,62,d,4,1,0,0,#,closed
+25028,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,24,m,4,1,0,0,#,open
+25029,Baseline,20.02,2,#,106,96,116,26.45,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,2,2,0,0,#,open
+25029,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,26,m,2,2,0,0,#,open
+25029,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,51,d,4,3,0,0,#,open
+25029,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,closed
+25030,Baseline,26.91,1,#,113,118,105,21.14,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,2,0,0,#,open
+25030,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,2,0,0,#,open
+25030,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,58,d,4,3,0,0,#,closed
+25030,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,open
+25031,Baseline,33.52,1,#,104,108,98,36.73,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,2,0,0,#,open
+25031,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,25,m,3,2,0,0,#,open
+25031,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,58,d,4,3,0,0,#,closed
+25031,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,open
+25032,Baseline,33.45,2,#,109,98,121,27.47,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,2,0,#,#,4,2,0,0,#,open
+25032,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,61,d,4,3,0,0,#,open
+25032,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,closed
+25033,Baseline,30.78,2,#,104,105,100,35.72,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25033,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25033,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,19,d,4,1,0,0,#,closed
+25033,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,1,0,0,#,open
+25034,Baseline,26.17,2,#,114,117,108,29.12,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25034,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,2,0,0,#,open
+25034,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,21,d,4,2,0,0,#,closed
+25034,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,2,0,0,#,open
+25035,Baseline,26.62,2,#,102,100,103,28.97,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,2,0,#,#,4,3,0,0,#,open
+25035,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,17,d,3,3,0,0,#,open
+25035,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,closed
+25036,Baseline,27.03,1,#,109,115,102,32.61,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25036,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,2,0,0,#,open
+25036,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,216,d,3,1,0,0,#,open
+25036,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,closed
+25037,Baseline,18.77,2,#,107,97,117,23.11,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,closed
+25037,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,40,m,3,1,0,0,#,open
+25037,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,134,d,3,3,0,0,#,open
+25037,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,21,m,3,3,0,0,#,open
+25038,Baseline,22.39,1,#,118,118,114,22.8,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25038,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,40,m,4,1,0,0,#,open
+25038,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,129,d,2,2,0,0,#,open
+25038,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,2,2,0,0,#,open
+25039,Baseline,19.78,1,#,120,118,118,21.79,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25039,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,41,m,3,1,0,0,#,closed
+25039,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,126,d,3,2,0,0,#,open
+25040,Baseline,43.45,1,#,120,117,119,18.63,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25040,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,49,m,4,2,0,0,#,open
+25040,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,45,d,3,2,0,0,#,closed
+25041,Baseline,24.71,1,#,86,86,90,22.12,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25041,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25041,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,71,d,4,2,0,0,#,open
+25041,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,2,0,0,#,closed
+25042,Baseline,22.76,1,#,113,113,109,18.8,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25042,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,43,m,3,1,0,0,#,open
+25042,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,71,d,3,2,0,0,#,closed
+25042,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,2,0,0,#,open
+25043,Baseline,26.19,1,#,105,105,103,27.44,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,2,0,#,#,3,1,0,0,#,open
+25043,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,85,d,3,2,0,0,#,open
+25043,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,2,0,0,#,closed
+25044,Baseline,35.73,2,#,114,113,111,22.59,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,3,0,0,#,open
+25044,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,3,0,0,#,open
+25044,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,27,d,4,0,0,0,#,closed
+25044,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,0,0,0,#,open
+25045,Baseline,21.26,1,#,123,120,119,18.89,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25045,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,40,m,3,1,0,0,#,open
+25045,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,203,d,3,0,0,0,#,open
+25045,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,25,m,3,0,0,0,#,closed
+25046,Baseline,23.22,1,#,109,108,108,25.74,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25046,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,2,0,0,#,open
+25046,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,14,d,4,2,0,0,#,open
+25046,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,2,0,0,#,closed
+25047,Baseline,40.09,2,#,107,107,105,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25047,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,40,m,4,1,0,0,#,closed
+25047,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,140,d,4,2,0,0,#,open
+25047,Retest_4,#,#,#,#,#,#,#,#,#,#,#,0,157,d,3,2,0,0,#,open
+25047,Retest_5,#,#,#,#,#,#,#,#,#,#,#,1,28,m,3,2,0,0,#,open
+25048,Baseline,22.95,1,#,90,89,93,21.76,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25048,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,1,0,0,#,open
+25048,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,28,d,3,1,0,0,#,open
+25048,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,closed
+25049,Baseline,30.08,2,#,104,103,104,24.33,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,0,0,0,#,open
+25049,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,0,0,0,#,open
+25049,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,154,d,3,1,0,0,#,open
+25049,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,1,0,0,#,closed
+25050,Baseline,32.57,2,#,113,109,112,24.36,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25050,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25050,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,14,d,2,1,0,0,#,open
+25050,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,24,m,2,1,0,0,#,closed
+25051,Baseline,33.22,1,#,106,108,103,31.92,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,3,0,0,#,open
+25051,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,3,0,0,#,open
+25051,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,201,d,3,1,0,0,#,closed
+25051,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,1,0,0,#,open
+25052,Baseline,40.05,2,#,129,119,133,24.66,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,0,0,0,#,open
+25052,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,33,m,3,0,0,0,#,closed
+25052,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,212,d,4,2,0,0,#,open
+25053,Baseline,34.9,2,#,118,115,117,28.69,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,open
+25053,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,4,1,0,0,#,open
+25053,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,159,d,4,2,0,0,#,open
+25053,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,2,0,0,#,open
+25054,Baseline,45.49,2,#,105,112,96,38.98,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,0,0,0,#,open
+25054,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,41,m,3,0,0,0,#,closed
+25054,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,169,d,3,2,0,0,#,open
+25054,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,2,0,0,#,open
+25055,Baseline,20.16,2,#,120,111,125,17.93,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25055,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,2,0,0,#,open
+25055,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,1,d,3,2,0,0,#,open
+25055,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,2,0,0,#,closed
+25056,Baseline,21.48,1,#,99,97,100,24.89,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,2,0,0,#,open
+25056,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,2,0,0,#,open
+25056,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,14,d,4,2,0,0,#,open
+25056,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,26,m,4,2,0,0,#,closed
+25057,Baseline,27.27,1,#,91,98,87,20.7,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,0,0,0,#,closed
+25057,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,26,m,3,0,0,0,#,open
+25057,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,179,d,3,2,0,0,#,open
+25057,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,2,0,0,#,open
+25058,Baseline,11.24,2,#,130,128,128,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,3,0,0,#,open
+25058,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,33,m,3,3,0,0,#,closed
+25058,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,301,d,3,3,0,0,#,open
+25058,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,16,m,3,3,0,0,#,open
+25059,Baseline,7.26,2,#,119,127,108,16.98,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,1,0,0,#,closed
+25059,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,28,m,4,1,0,0,#,open/closed
+25059,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,199,d,3,3,0,0,#,open
+25059,Retest_3,#,#,#,#,#,#,#,#,#,#,#,1,23,m,3,3,0,0,#,open
+25060,Baseline,11.03,2,#,107,105,107,15.01,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,3,1,0,0,#,open
+25060,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25060,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,84,d,2,2,0,0,#,open
+25060,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,28,m,2,2,0,0,#,open
+25061,Baseline,22.33,2,#,109,113,103,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,3,0,#,#,4,0,0,0,#,closed
+25061,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,0,0,0,#,open
+25061,Retest_2,#,#,#,#,#,#,#,#,#,#,#,0,18,d,3,0,0,0,#,open
+25061,Retest_3,#,#,#,#,#,#,#,#,#,#,#,0,16,m,3,0,0,0,#,closed
+25062,Baseline,13.22,1,#,104,108,99,17.51,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25062,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,2,0,0,#,open
+25063,Baseline,12.24,1,#,109,111,105,15.11,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25063,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,34,m,4,2,0,0,#,open
+25064,Baseline,12.1,2,#,107,112,99,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25064,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,24,m,3,3,0,0,#,open
+25065,Baseline,11.32,2,#,142,141,133,22.86,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,1,0,0,#,open
+25065,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,2,1,0,0,#,open
+25066,Baseline,9.23,2,#,118,127,106,18.18,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25066,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,3,0,0,#,open
+25067,Baseline,8.26,1,#,134,143,117,13.52,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,0,0,0,#,open
+25067,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,2,0,0,0,#,open
+25068,Baseline,9.81,2,#,101,109,93,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25068,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25069,Baseline,10.52,2,#,111,102,119,18.83,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25069,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25070,Baseline,13.58,2,#,126,126,119,21.3,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25070,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,3,0,0,#,open
+25071,Baseline,13.63,2,#,134,131,129,18.14,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25071,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,0,0,0,#,open
+25072,Baseline,14.65,2,#,110,119,100,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25072,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,0,0,0,#,open
+25073,Baseline,11.98,2,#,99,106,91,19.39,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25073,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,3,3,0,0,#,open
+25074,Baseline,8.49,1,#,109,116,102,14.31,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25074,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,4,0,0,0,#,open
+25075,Baseline,15.71,2,#,108,103,110,20.28,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25075,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,25,m,3,3,0,0,#,open
+25076,Baseline,15.28,2,#,83,80,89,20.67,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25076,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,3,3,0,0,#,open
+25077,Baseline,17.43,2,#,109,119,97,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,open
+25077,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,3,0,0,0,#,open
+25078,Baseline,15.4,2,#,107,112,103,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,open
+25078,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,2,3,0,0,#,closed
+25079,Baseline,16.31,2,#,81,83,83,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25079,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,3,0,0,#,closed
+25080,Baseline,15.28,1,#,101,99,103,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25080,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,26,m,3,3,0,0,#,closed
+25081,Baseline,17.7,2,#,102,111,92,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,open
+25081,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,2,3,0,0,#,closed
+25082,Baseline,17.31,1,#,98,103,92,20.76,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,open
+25082,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,2,0,0,#,closed
+25083,Baseline,17.83,2,#,#,#,#,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,closed
+25083,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,34,m,4,3,0,0,#,closed
+25084,Baseline,10.86,2,#,91,97,88,16.77,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,closed
+25084,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,17,m,3,0,0,0,#,open
+25085,Baseline,14.19,1,#,88,91,89,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25085,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,4,3,0,0,#,closed
+25086,Baseline,13.9,1,#,118,122,106,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,open
+25086,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,3,0,0,0,#,open
+25087,Baseline,16.93,2,#,124,120,120,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,closed
+25087,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,3,0,0,0,#,open
+25088,Baseline,8.45,1,#,114,111,112,17.15,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,closed
+25088,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,18,m,3,1,0,0,#,open
+25089,Baseline,32.26,2,#,93,88,99,19.93,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25089,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,41,m,4,1,0,0,#,closed
+25090,Baseline,38.84,1,#,123,113,127,22.237,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,closed
+25090,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,32,m,4,0,0,0,#,open
+25091,Baseline,16.08,1,#,99,99,97,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,closed
+25091,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,31,m,4,1,0,0,#,open
+25092,Baseline,11.91,2,#,121,120,117,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,0,0,0,#,closed
+25092,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,43,m,2,0,0,0,#,open
+25093,Baseline,14.79,2,#,112,116,106,17.79,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25093,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,closed
+25094,Baseline,46.25,1,#,125,117,128,26.96,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,closed
+25094,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,1,0,0,#,open
+25095,Baseline,20.92,2,#,119,114,120,24.54,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,closed
+25095,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,40,m,3,1,0,0,#,open
+25096,Baseline,8.03,1,#,86,99,77,22.27,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25096,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,16,m,3,3,0,0,#,open
+25097,Baseline,7.29,2,#,109,112,103,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,2,0,0,#,closed
+25097,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,2,2,0,0,#,open
+25098,Baseline,7.68,1,#,97,93,100,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,2,0,0,#,closed
+25098,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,2,2,0,0,#,open
+25099,Baseline,17.86,1,#,106,106,103,24.43,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,closed
+25099,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,open
+25100,Baseline,14.48,1,#,111,113,106,23.77,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,open
+25100,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,2,0,0,#,closed
+25101,Baseline,45.83,2,#,112,110,110,25.5,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,closed
+25101,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,2,0,0,#,open
+25102,Baseline,14.87,1,#,107,107,106,18.72,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25102,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,2,0,0,#,closed
+25103,Baseline,17.3,2,#,109,113,104,26.46,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,closed
+25103,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,2,3,0,0,#,open
+25104,Baseline,15.21,1,#,82,76,92,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,closed
+25104,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,open
+25105,Baseline,7.67,1,#,124,119,123,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,closed
+25105,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,3,0,0,#,open
+25106,Baseline,10.74,2,#,113,103,121,20.52,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,open
+25106,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,15,m,2,3,0,0,#,open
+25107,Baseline,14.38,1,#,123,119,120,17.85,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25107,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,closed
+25108,Baseline,9.96,1,#,110,120,99,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,closed
+25108,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,3,0,0,#,open
+25109,Baseline,16.88,2,#,125,121,123,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25109,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,closed
+25110,Baseline,16.55,2,#,91,88,96,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25110,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,3,3,0,0,#,closed
+25111,Baseline,47.61,1,#,96,93,99,27.12,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25111,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,closed
+25112,Baseline,14.91,1,#,113,111,110,20.89,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25112,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,3,0,0,#,closed
+25113,Baseline,16.73,2,#,122,120,119,22.76,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25113,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,closed
+25114,Baseline,48,2,#,118,114,119,27.72,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,closed
+25114,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,2,3,0,0,#,open
+25115,Baseline,11.56,1,#,80,85,79,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25115,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,15,m,4,3,0,0,#,open
+25116,Baseline,12.99,1,#,105,112,96,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,1,0,0,#,closed
+25116,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,25,m,2,1,0,0,#,open
+25117,Baseline,9.35,2,#,99,95,103,27.16,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,0,0,0,#,open
+25117,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,0,0,0,#,closed
+25118,Baseline,46.84,2,#,102,99,105,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,closed
+25118,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,0,0,0,#,open
+25119,Baseline,14.18,1,#,117,108,124,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,open
+25119,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,0,0,0,#,closed
+25120,Baseline,16.28,2,#,125,122,120,28.69,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25120,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,closed
+25121,Baseline,16.13,2,#,109,109,106,27.73,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25121,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,0,0,0,#,closed
+25122,Baseline,11.4,2,#,142,141,133,22.86,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25122,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,1,0,0,#,closed
+25123,Baseline,15.95,1,#,113,118,106,20.05,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,closed
+25123,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,3,0,0,#,open
+25124,Baseline,22.1,1,#,114,115,109,21.14,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25124,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,closed
+25125,Baseline,47.18,1,#,88,89,89,22.94,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,closed
+25125,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,0,0,0,#,open
+25126,Baseline,14.42,1,#,132,132,124,19.84,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25126,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,9,m,4,3,0,0,#,open
+25127,Baseline,17.96,1,#,108,113,102,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25127,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,1,0,0,#,closed
+25128,Baseline,22.76,2,#,119,129,106,22.51,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25128,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,1,0,0,#,closed
+25129,Baseline,16.55,2,#,113,114,109,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25129,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,1,0,0,#,closed
+25130,Baseline,10.52,2,#,105,111,97,29.63,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,closed
+25130,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,29,m,4,2,0,0,#,open
+25131,Baseline,14.66,2,#,126,115,132,17.79,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25131,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,closed
+25132,Baseline,14.06,1,#,115,109,119,21.97,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,0,0,0,#,closed
+25132,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,2,0,0,0,#,open
+25133,Baseline,38.56,1,#,105,91,119,22.19,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,closed
+25133,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,4,1,0,0,#,open
+25134,Baseline,53.96,2,#,119,116,118,26.61,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25134,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,1,0,0,#,closed
+25135,Baseline,55.03,2,#,121,126,111,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,closed
+25135,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,3,1,0,0,#,open
+25136,Baseline,52.63,2,#,103,91,116,26.54,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,1,0,0,#,open
+25136,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,2,1,0,0,#,closed
+25137,Baseline,33.75,2,#,115,112,115,23.11,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,1,0,0,#,open
+25137,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,2,1,0,0,#,closed
+25138,Baseline,31.51,2,#,127,126,121,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,open
+25138,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,28,m,3,2,0,0,#,closed
+25139,Baseline,25.34,2,#,115,109,118,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25139,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,2,0,0,#,open
+25140,Baseline,22.48,2,#,123,122,118,24.27,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,2,0,0,#,open
+25140,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,2,2,0,0,#,closed
+25141,Baseline,31.78,2,#,104,104,103,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,closed
+25141,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,2,0,0,#,open
+25142,Baseline,6.47,2,#,114,113,111,18.6,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25142,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,open
+25143,Baseline,40.69,2,#,97,94,100,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,0,0,0,#,closed
+25143,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,21,m,3,0,0,0,#,open
+25144,Baseline,23.65,2,#,116,109,119,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,closed
+25144,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,3,0,0,#,open
+25145,Baseline,28.2,2,#,103,104,102,20.78,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25145,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,16,m,4,3,0,0,#,closed
+25146,Baseline,14.43,2,#,104,116,92,24.12,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,open
+25146,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,3,0,0,#,open
+25147,Baseline,31.8,2,#,94,89,99,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,3,0,0,#,closed
+25147,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,3,0,0,#,open
+25148,Baseline,19.23,2,#,129,127,125,22.08,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25148,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,21,m,4,0,0,0,#,closed
+25149,Baseline,45.74,2,#,103,109,96,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,closed
+25149,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,0,0,0,#,open
+25150,Baseline,32.17,2,#,115,110,116,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25150,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,21,m,4,0,0,0,#,closed
+25151,Baseline,14.36,2,#,107,101,111,19.87,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,0,0,0,#,open
+25151,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,0,0,0,#,open
+25152,Baseline,9,2,#,127,134,114,19.02,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25152,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,open
+25153,Baseline,11.34,2,#,119,114,120,14.62,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25153,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,1,0,0,#,open
+25154,Baseline,23.81,1,#,119,109,126,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25154,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,2,0,0,#,open
+25155,Baseline,30.72,2,#,123,128,111,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open
+25155,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,0,0,0,#,open
+25156,Baseline,27.03,2,#,100,91,108,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25156,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,1,0,0,#,open
+25157,Baseline,33,2,#,125,121,121,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25157,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,1,0,0,#,open
+25158,Baseline,22.11,1,#,112,113,107,21.63,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25158,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25159,Baseline,21.58,1,#,113,109,114,21.41,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25159,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,40,m,3,1,0,0,#,open
+25160,Baseline,21.59,1,#,118,119,112,21.56,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25160,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,4,1,0,0,#,open
+25161,Baseline,26.66,1,#,91,90,93,28.35,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,open
+25161,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,2,0,0,#,open
+25162,Baseline,27.89,1,#,88,94,86,20.55,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25162,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,3,0,0,#,open
+25163,Baseline,21.15,2,#,120,118,119,20.62,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,open
+25163,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,2,0,0,#,open
+25164,Baseline,20.56,2,#,113,107,118,22.8,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,2,0,0,#,open
+25164,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,3,2,0,0,#,open
+25165,Baseline,40.91,2,#,86,82,93,29.9,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25165,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,3,1,0,0,#,open
+25166,Baseline,20.3,2,#,107,108,104,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25166,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,4,2,0,0,#,open
+25167,Baseline,23.08,2,#,122,121,117,23.96,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25167,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25168,Baseline,23.35,2,#,139,140,129,23.11,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25168,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,3,1,0,0,#,open
+25169,Baseline,32.82,2,#,107,95,119,24.82,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25169,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25170,Baseline,41.21,2,#,107,108,103,23.36,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25170,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,4,1,0,0,#,open
+25171,Baseline,31.69,2,#,101,99,103,24.39,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25171,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25172,Baseline,22.77,2,#,132,130,127,23.73,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25172,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,23,m,3,1,0,0,#,open
+25173,Baseline,19.73,2,#,119,112,123,24.75,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25173,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,22,m,4,1,0,0,#,open
+25174,Baseline,20.04,2,#,123,129,111,21.74,1,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25174,Retest_1,#,#,#,#,#,#,#,#,#,#,#,1,21,m,3,1,0,0,#,open
+25175,Baseline,8.16,1,#,112,125,99,14.95,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,0,0,0,#,open/closed
+25175,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,20,m,4,0,0,0,#,open
+25176,Baseline,8.52,1,#,129,132,120,18.46,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25176,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,26,m,4,1,0,0,#,open
+25177,Baseline,10.73,2,#,121,120,117,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25177,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,1,0,0,#,open
+25178,Baseline,12.1,1,#,123,119,119,17.97,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25178,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,26,m,3,1,0,0,#,open
+25179,Baseline,8.91,2,#,101,92,110,17.42,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25179,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,1,0,0,#,open
+25180,Baseline,9,2,#,117,110,120,17.77,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,2,1,0,0,#,open
+25180,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,2,1,0,0,#,open
+25181,Baseline,12.9,2,#,93,100,88,15.87,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25181,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,2,0,0,#,open
+25182,Baseline,9.54,2,#,132,136,120,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,3,0,0,#,open
+25182,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,3,3,0,0,#,open
+25183,Baseline,11.2,2,#,126,121,120,#,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,3,0,0,#,open
+25183,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,22,m,4,3,0,0,#,open
+25184,Baseline,9.48,2,#,136,129,135,16.27,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,1,0,0,#,open
+25184,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,27,m,4,1,0,0,#,open
+25185,Baseline,9.19,2,#,128,122,128,21.11,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,3,1,0,0,#,open
+25185,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,24,m,3,1,0,0,#,closed
+25186,Baseline,11.09,2,#,118,128,115,16.7,0,"YOU'RE DOING A GREAT JOB! FOR THE NEXT FEW MINUTES WE WOULD LIKE YOU TO KEEP YOUR EYES OPEN, RELAX AND REMAIN STILL.",5,1,0,#,#,4,2,0,0,#,open
+25186,Retest_1,#,#,#,#,#,#,#,#,#,#,#,0,23,m,4,2,0,0,#,open

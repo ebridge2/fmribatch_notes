@@ -1,0 +1,61 @@
+SUBID,SESSION,AGE_AT_SCAN_1,SEX,DSM_IV_TR,FIQ,VIQ,PIQ,BMI,RESTING_STATE_INSTRUCTION,VISUAL_STIMULATION_CONDITION,RETEST_DESIGN,PRECEDING_CONDITION,RETEST_DURATION,RETEST_UNITS,TIME_OF_DAY,SEASON,SATIETY,LMP,HANDEDNESS
+25599,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,5,0,0,-1,#
+25599,Retest_1,#,#,#,#,#,#,#,#,#,#,0,900,d,2,2,0,-1,#
+25600,Baseline,21,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,1,0,-1,#
+25600,Retest_1,#,#,#,#,#,#,#,#,#,#,0,365,d,4,1,0,-1,#
+25601,Baseline,40,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,3,0,-1,#
+25601,Retest_1,#,#,#,#,#,#,#,#,#,#,0,540,d,5,1,0,-1,#
+25602,Baseline,20,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,4,0,0,0,#
+25602,Retest_1,#,#,#,#,#,#,#,#,#,#,0,7,d,2,0,0,0,#
+25603,Baseline,23,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,0,0,-1,#
+25603,Retest_1,#,#,#,#,#,#,#,#,#,#,0,0,d,4,0,0,-1,#
+25604,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,0,0,-1,#
+25604,Retest_1,#,#,#,#,#,#,#,#,#,#,0,1,d,5,0,0,-1,#
+25605,Baseline,23,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,2,0,-1,#
+25605,Retest_1,#,#,#,#,#,#,#,#,#,#,0,90,d,5,3,0,-1,#
+25606,Baseline,20,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,3,0,-1,#
+25606,Retest_1,#,#,#,#,#,#,#,#,#,#,0,900,d,2,1,0,-1,#
+25607,Baseline,22,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,3,0,-1,#
+25607,Retest_1,#,#,#,#,#,#,#,#,#,#,0,900,d,2,1,0,-1,#
+25608,Baseline,21,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,4,0,0,-1,#
+25608,Retest_1,#,#,#,#,#,#,#,#,#,#,0,180,d,4,2,0,-1,#
+25609,Baseline,22,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,0,0,0,#
+25609,Retest_1,#,#,#,#,#,#,#,#,#,#,0,13,d,5,0,0,0,#
+25610,Baseline,21,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,0,0,-1,#
+25610,Retest_1,#,#,#,#,#,#,#,#,#,#,0,300,d,5,3,0,-1,#
+25611,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,1,0,-1,#
+25611,Retest_1,#,#,#,#,#,#,#,#,#,#,0,120,d,3,3,0,-1,#
+25612,Baseline,20,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,2,0,0,#
+25612,Retest_1,#,#,#,#,#,#,#,#,#,#,0,9,d,5,2,0,0,#
+25613,Baseline,22,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,3,0,-1,#
+25613,Retest_1,#,#,#,#,#,#,#,#,#,#,0,60,d,5,3,0,-1,#
+25614,Baseline,22,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,5,0,0,-1,#
+25614,Retest_1,#,#,#,#,#,#,#,#,#,#,0,19,d,5,3,0,-1,#
+25615,Baseline,22,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,2,0,0,#
+25615,Retest_1,#,#,#,#,#,#,#,#,#,#,0,120,d,4,3,0,0,#
+25616,Baseline,22,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,4,0,0,0,#
+25616,Retest_1,#,#,#,#,#,#,#,#,#,#,0,8,d,2,0,0,0,#
+25617,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,2,0,-1,#
+25617,Retest_1,#,#,#,#,#,#,#,#,#,#,0,150,d,4,0,0,-1,#
+25618,Baseline,24,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,5,2,0,0,#
+25618,Retest_1,#,#,#,#,#,#,#,#,#,#,0,270,d,2,1,0,0,#
+25619,Baseline,24,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,2,0,0,#
+25619,Retest_1,#,#,#,#,#,#,#,#,#,#,0,150,d,4,0,0,0,#
+25620,Baseline,23,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,2,0,-1,#
+25620,Retest_1,#,#,#,#,#,#,#,#,#,#,0,150,d,4,0,0,-1,#
+25621,Baseline,20,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,2,0,0,#
+25621,Retest_1,#,#,#,#,#,#,#,#,#,#,0,90,d,4,3,0,0,#
+25622,Baseline,24,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,2,0,-1,#
+25622,Retest_1,#,#,#,#,#,#,#,#,#,#,0,150,d,4,0,0,-1,#
+25623,Baseline,22,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,3,0,-1,#
+25623,Retest_1,#,#,#,#,#,#,#,#,#,#,0,0,d,4,3,0,-1,#
+25624,Baseline,26,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,3,0,0,-1,#
+25624,Retest_1,#,#,#,#,#,#,#,#,#,#,0,1,d,5,0,0,-1,#
+25625,Baseline,21,1,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,3,0,0,#
+25625,Retest_1,#,#,#,#,#,#,#,#,#,#,0,540,d,3,1,0,0,#
+25626,Baseline,26,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,2,0,0,-1,#
+25626,Retest_1,#,#,#,#,#,#,#,#,#,#,0,0,d,2,0,0,-1,#
+25627,Baseline,23,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,4,0,0,-1,#
+25627,Retest_1,#,#,#,#,#,#,#,#,#,#,0,15,d,3,0,0,-1,#
+25628,Baseline,28,2,#,#,#,#,#,"Lie Still and Relax During Scan",4,2,0,#,#,4,3,0,-1,#
+25628,Retest_1,#,#,#,#,#,#,#,#,#,#,0,30,d,5,0,0,-1,#
