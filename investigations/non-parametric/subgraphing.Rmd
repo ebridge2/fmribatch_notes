@@ -287,6 +287,21 @@ Below, we visualize the sum over all signal-sub graphs estimated per-study $z_j$
 
 and also, the globally estimated sub-graph with edges $I_{uv} = hbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
 
+```{r, fig.width=12, fig.height=8}
+dset_plots <- list()
+
+counter <- 1
+for (i in 1:length(dwi.dsets)) {
+  dset_plots[[counter]] <- fmriu.plot.plot_graph(dwi.dset.ssgs[,,i],  legend.name=TeX("$I_{uv}$"),
+                      title=dwi.dsets[i],
+                      limits=c(min(dwi.dset.ssgs), max(dwi.dset.ssgs)), xlabel = "ROI",
+                      ylabel = "ROI") + theme(legend.position=NaN)
+  counter <- counter + 1
+}
+
+multiplot(plotlist = dset_plots, cols = ceiling(sqrt(length(dwi.dsets))))
+```
+
 ```{r, fig.width=12, fig.height=5}
 local_ssg <- apply(dwi.dset.ssgs, c(1,2), sum)
 plots <- list()
@@ -409,10 +424,26 @@ Below, we visualize the sum over all signal-sub graphs estimated per-study $z_j$
   M_{uv} = \sum_{j=1}^N_z \mathbb{I}\left\{(u, v) \in  \mathcal{S}_{z = z_j}\right\}
 \end{align*}
 
-and also, the globally estimated sub-graph with edges $I_{uv} = \mathbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
+and also, the local and globally estimated sub-graph with edges $I_{uv} = \mathbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
+
+```{r, fig.width=12, fig.height=12}
+dset_plots <- list()
+
+counter <- 1
+for (i in 1:length(fmri.dsets)) {
+  dset_plots[[counter]] <- fmriu.plot.plot_graph(fmri.dset.ssgs[,,i],  legend.name=TeX("$I_{uv}$"),
+                      title=fmri.dsets[i],
+                      limits=c(min(fmri.global.ssg), max(fmri.global.ssg)), xlabel = "ROI",
+                      ylabel = "ROI") + theme(legend.position=NaN)
+  counter <- counter + 1
+}
+
+multiplot(plotlist = dset_plots, cols = round(sqrt(length(fmri.dsets))))
+```
 
 ```{r, fig.width=12, fig.height=5}
 local_ssg <- apply(fmri.dset.ssgs, c(1,2), sum)
+
 plots <- list()
 plots[[1]] <- fmriu.plot.plot_graph(local_ssg,  legend.name=TeX("$M_{uv}"),
                       title="Functional Sum of Per-Study Sub-graphs",
@@ -420,7 +451,7 @@ plots[[1]] <- fmriu.plot.plot_graph(local_ssg,  legend.name=TeX("$M_{uv}"),
                       ylabel = "ROI")
 plots[[2]] <- fmriu.plot.plot_graph(fmri.global.ssg,  legend.name=TeX("$I_{uv}$"),
                       title="Functional Global Sub-graph",
-                      limits=c(min(local_ssg), max(local_ssg)), xlabel = "ROI",
+                      limits=c(min(fmri.global.ssg), max(fmri.global.ssg)), xlabel = "ROI",
                       ylabel = "ROI")
 multiplot(plotlist=plots, cols = 2)
 ```
