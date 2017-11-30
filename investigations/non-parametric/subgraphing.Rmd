@@ -285,21 +285,22 @@ Below, we visualize the sum over all signal-sub graphs estimated per-study $z_j$
   M_{uv} = \sum_{j=1}^N_z \mathbb{I}\left\{(u, v) \in  \mathcal{S}_{z = z_j}\right\}
 \end{align*}
 
-and also, the globally estimated sub-graph with edges $\mathbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
+and also, the globally estimated sub-graph with edges $I_{uv} = hbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
 
-```{r, width=14, height=6}
+```{r, fig.width=12, fig.height=5}
 local_ssg <- apply(dwi.dset.ssgs, c(1,2), sum)
 plots <- list()
 plots[[1]] <- fmriu.plot.plot_graph(local_ssg,  legend.name=TeX("$M_{uv}"),
                       title="Diffusion Sum of Per-Study Sub-graphs",
                       limits=c(min(local_ssg), max(local_ssg)), xlabel = "ROI",
                       ylabel = "ROI")
-plots[[2]] <- fmriu.plot.plot_graph(dwi.global.ssg,  legend.name=TeX("$I\\{(u, v) \\in S\\}$"),
+plots[[2]] <- fmriu.plot.plot_graph(dwi.global.ssg,  legend.name=TeX("$I_{uv}$"),
                       title="Diffusion Global Sub-graph",
                       limits=c(min(local_ssg), max(local_ssg)), xlabel = "ROI",
                       ylabel = "ROI")
 multiplot(plotlist=plots, cols = 2)
 ```
+
 as we can see, oddities in the sub-graphs seem somewhat consistent in the per-study vs the global sub-graph.
 
 ### Functional
@@ -408,18 +409,20 @@ Below, we visualize the sum over all signal-sub graphs estimated per-study $z_j$
   M_{uv} = \sum_{j=1}^N_z \mathbb{I}\left\{(u, v) \in  \mathcal{S}_{z = z_j}\right\}
 \end{align*}
 
-and also, the globally estimated sub-graph with edges $\mathbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
+and also, the globally estimated sub-graph with edges $I_{uv} = \mathbb{I}\{(u, v) \in \mathcal{S}\}$. Assuming the batch-effect is small, we intuitively expect that the two should look relatively similar:
 
-```{r, width=14, height=6}
+```{r, fig.width=12, fig.height=5}
 local_ssg <- apply(fmri.dset.ssgs, c(1,2), sum)
 plots <- list()
 plots[[1]] <- fmriu.plot.plot_graph(local_ssg,  legend.name=TeX("$M_{uv}"),
                       title="Functional Sum of Per-Study Sub-graphs",
                       limits=c(min(local_ssg), max(local_ssg)), xlabel = "ROI",
                       ylabel = "ROI")
-plots[[2]] <- fmriu.plot.plot_graph(fmri.global.ssg,  legend.name=TeX("$I\\{(u, v) \\in S\\}$"),
+plots[[2]] <- fmriu.plot.plot_graph(fmri.global.ssg,  legend.name=TeX("$I_{uv}$"),
                       title="Functional Global Sub-graph",
                       limits=c(min(local_ssg), max(local_ssg)), xlabel = "ROI",
                       ylabel = "ROI")
 multiplot(plotlist=plots, cols = 2)
 ```
+
+Again, the two look relatively similar.
