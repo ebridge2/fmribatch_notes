@@ -286,8 +286,9 @@ We can visualize the results of our simulation, first checking our parameter est
 \end{align*}
 
 We first investigate the convergence of our parameters with respect to various measures of interest to verify that our intuition is correct. We visualize:
-+ the convergence of our parameters with respect to sample size, intuitively expecting parameters relating to our fixed effects ($X$ and $Y$ slopes) to converge, whereas we anticipate no convergence of our random-effects parameters ($\sigma_z, \sigma_q$).
-+ the convergence of our parameters with respect to the number of possible levels our random-effects can occupy. We expect that with more levels, we will be able to better estimate the variance of our given random-effect
+
++ the convergence of our parameters with respect to sample size, intuitively expecting parameters relating to our fixed effects ($X$ and $Y$ slopes) to converge, whereas we anticipate no convergence of our random-effects parameters ($\sigma_z, \sigma_q$).  
++ the convergence of our parameters with respect to the number of possible levels our random-effects can occupy. We expect that with more levels, we will be able to better estimate the variance of our given random-effect  
 
 ```{r}
 param_dat <- data.frame(n=ns, xslope=apply(xsl_er, c(1), mean), yslope=apply(ysl_er, c(1), mean),
@@ -321,8 +322,9 @@ multiplot(samp, cats, cols=1)
 Of note, we actaully fit our fixed-effects worse as the number of levels increases with fixed sample size. We might anticipate that this is because the model has more and more degrees of freedom for a fixed number of samples, and therefore may not converge as efficiently.
 
 Additionally, we verify that tour model fit accounting for parameter `Q` is better than the model without `Q`. We do this in two ways:
-+ verify that the difference between the model AIC with `Q`, $A_m$, is consistently less than the model AIC of the model without `Q`, $A_n$, and that as we increase sample size, the model with `Q` is a better and better fit (and hence, that the difference $A_m - A_n$ increases in magnitude and becomes more negative)
-+ verify that the difference between the model AIC with `Q`, $A_m$, and the model AIC without `Q`, $A_n$, increases with the number of possible levels. This is because we expect that our model has more and more degrees of freedom, and therefore the model will fit worse and worse including more degrees of freedom (by including the `Q` parameter)
+
++ verify that the difference between the model AIC with `Q`, $A_m$, is consistently less than the model AIC of the model without `Q`, $A_n$, and that as we increase sample size, the model with `Q` is a better and better fit (and hence, that the difference $A_m - A_n$ increases in magnitude and becomes more negative)  
++ verify that the difference between the model AIC with `Q`, $A_m$, and the model AIC without `Q`, $A_n$, increases with the number of possible levels. This is because we expect that our model has more and more degrees of freedom, and therefore the model will fit worse and worse including more degrees of freedom (by including the `Q` parameter)  
 
 ```{r}
 dat_aicdiff <- data.frame(n=ns, diff=apply(aic_diff, c(1), mean))
@@ -431,7 +433,7 @@ parse_class <- function(basepath, dsets, subjects) {
   return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
 }
 
-sexpath = '/home/eric/Documents/research/MGC-repos/fmribatch_notes/data/phenotypic_data/'
+sexpath = '/home/eric/Documents/research/mgc-repos/fmribatch_notes/data/phenotypic_data/'
 class = parse_class(sexpath, dwi.dsets, subjects)
 sexs = class$sex
 # dwi.diseases = class$disease
@@ -479,6 +481,36 @@ dwi.varest[,,3] <- dwi.varest[,,3] + t(dwi.varest[,,3])
 dwi.dset_p <- dwi.dset_p + t(dwi.dset_p)
 ```
 
+For a few arbitrary points, we plot density estimates of the subject and the datasets. Subjects are shown in blue, and datasets are shown in red:
+
+```{r}
+set.seed(1234)
+np <- 16
+i <- sample(1:nroi, replace=FALSE, size=np)
+j <- sample(1:nroi, replace=FALSE, size=np)
+
+subplots <- list()
+datasetplots <- list()
+for (idx in 1:np) {
+  test_dat$dat <- graphs[,i[idx],j[idx]]
+  fit.model <- lmer(dat~sex + age + (1 | subject) + (1 | dataset), data=test_dat, REML=FALSE)
+  res <- ranef(fit.model)
+  sub.dat <- data.frame(subject=rownames(res$subject), intercept=res$subject[['(Intercept)']])
+  dat.dat <- data.frame(subject=rownames(res$dataset), intercept=res$dataset[['(Intercept)']])
+  subplots[[idx]] <- ggplot(sub.dat, aes(intercept)) + geom_density(fill='blue') +
+    xlab("Intercept") +
+    ylab("Density") +
+    ggtitle(sprintf("%d, %d", i, j))
+  datasetplots[[idx]] <- ggplot(dat.dat, aes(intercept)) + geom_density(fill='red') +
+    xlab("Intercept") +
+    ylab("Density")
+    ggtitle(sprintf("%d, %d", i, j))
+}
+
+multiplot(plotlist = subplots, cols = 4)
+multiplot(plotlist = datasetplots, cols = 4)
+```
+
 We can plot the percent variance per random component:
   
 ```{r}
@@ -519,8 +551,8 @@ plot_brain_overlay <- function(atlas, reference, values) {
   overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(0, length(values)),
           col.y=brewer.pal(n = 8, name = "Reds"))
 }
-parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan-res-2x2x2.nii.gz')
-template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_res-2x2x2_T1w.nii.gz')
+parc = readNIfTI('/home/eric/Documents/research/atlas_exploration/label/desikan_res-2x2x2.nii.gz')
+template = readNIfTI('/home/eric/Documents/research/atlas_exploration/atlas/MNI152_t1w_res-2x2x2_brain.nii.gz')
 
 for (i in 1:3) {
   vertvar = apply(dwi.varest[,,i]*varcorrect, 1, sum)
@@ -624,7 +656,7 @@ parse_class <- function(basepath, dsets, subjects) {
   return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
 }
 
-sexpath = '/home/eric/Documents/research/MGC-repos/fmribatch_notes/data/phenotypic_data/'
+sexpath = '/home/eric/Documents/research/mgc-repos/fmribatch_notes/data/phenotypic_data/'
 class = parse_class(sexpath, fmri.dsets, subjects)
 sexs = class$sex
 # dwi.diseases = class$disease
@@ -672,6 +704,36 @@ fmri.varest[,,3] <- fmri.varest[,,3] + t(fmri.varest[,,3])
 fmri.dset_p <- fmri.dset_p + t(fmri.dset_p)
 ```
 
+For a few arbitrary points, we plot density estimates of the subject and the datasets. Subjects are shown in blue, and datasets are shown in red:
+
+```{r}
+set.seed(1234)
+np <- 16
+i <- sample(1:nroi, replace=FALSE, size=np)
+j <- sample(1:nroi, replace=FALSE, size=np)
+
+subplots <- list()
+datasetplots <- list()
+for (idx in 1:np) {
+  test_dat$dat <- graphs[,i[idx],j[idx]]
+  fit.model <- lmer(dat~sex + age + (1 | subject) + (1 | dataset), data=test_dat, REML=FALSE)
+  res <- ranef(fit.model)
+  sub.dat <- data.frame(subject=rownames(res$subject), intercept=res$subject[['(Intercept)']])
+  dat.dat <- data.frame(subject=rownames(res$dataset), intercept=res$dataset[['(Intercept)']])
+  subplots[[idx]] <- ggplot(sub.dat, aes(intercept)) + geom_density(fill='blue') +
+    xlab("Intercept") +
+    ylab("Density") +
+    ggtitle(sprintf("%d, %d", i, j))
+  datasetplots[[idx]] <- ggplot(dat.dat, aes(intercept)) + geom_density(fill='red') +
+    xlab("Intercept") +
+    ylab("Density")
+    ggtitle(sprintf("%d, %d", i, j))
+}
+
+multiplot(plotlist = subplots, cols = 4)
+multiplot(plotlist = datasetplots, cols = 4)
+```
+
 We can plot the percent variance per random component:
   
 ```{r}
@@ -714,8 +776,8 @@ plot_brain_overlay <- function(atlas, reference, values) {
   overlay(reference, ifelse(ov > 0, ov, NA), zlim.y=c(0, length(values)),
           col.y=brewer.pal(n = 8, name = "Reds"))
 }
-parc = readNIfTI('/home/eric/atlases/func_atlases/label/desikan-res-2x2x2.nii.gz')
-template = readNIfTI('/home/eric/atlases/func_atlases/atlas/MNI152NLin6_res-2x2x2_T1w.nii.gz')
+parc = readNIfTI('/home/eric/Documents/research/atlas_exploration/label/desikan_res-2x2x2.nii.gz')
+template = readNIfTI('/home/eric/Documents/research/atlas_exploration/atlas/MNI152_t1w_res-2x2x2_brain.nii.gz')
 
 for (i in 1:3) {
   vertvar = apply(fmri.varest[,,i]*varcorrect, 1, sum)
