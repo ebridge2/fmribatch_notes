@@ -397,36 +397,36 @@ We conduct a synthetic bootstrap investigation following the above procedure:
 ```{r, fig.width=12, fig.height=8, echo=FALSE}
 dwi.bin_graphs = apply(dwi.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
 dwi.bin_graphs <- aperm(dwi.bin_graphs, c(2,3,1))
-result <- parametric_bootstrap(dwi.bin_graphs, dwi.sexs, dwi.datasets, verb=FALSE, nrep=100, tstat=tstat.jaccard)
+dwi.result <- parametric_bootstrap(dwi.bin_graphs, dwi.sexs, dwi.datasets, verb=FALSE, nrep=100, tstat=tstat.jaccard)
 ```
 
 we first visualize our set of subgraphs computed from each study using the sex class label and study as the batch label:
 
 ```{r, fig.width=8, fig.height=7}
-plot.zset(result$zset, result$alt.ssgs)
+plot.zset(dwi.result$zset, dwi.result$alt.ssgs)
 ```
 
 and we visualize the synthetically generated sub-graphs for each dataset from our synthetic bootstrap:
 
 ```{r, fig.width=8, fig.height=7}
-plot.zset(result$zset, result$null.ssgs)
+plot.zset(dwi.result$zset, dwi.result$null.ssgs)
 ```
 
 Along with the globally estimated sub-graph:
 
 ```{r, fig.height=4, fig.width=5}
-fmriu.plot.plot_graph(result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
+fmriu.plot.plot_graph(dwi.result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
                         title="Global SSG",
-                        limits=c(min(result$global.ssgs), max(result$global.ssgs)), xlabel = "ROI",
+                        limits=c(min(dwi.result$global.ssgs), max(dwi.result$global.ssgs)), xlabel = "ROI",
                         ylabel = "ROI") + theme(legend.position=NaN)
 ```
 
 finally, we visualzize a density estimate of the null, and compare with our observed test statistic, producing a $p$-value as the fraction of statistics under the null that are more contradictory to the null. Since our model attempts to show the similarity between the global and local sub-graphs using the jaccard index, being more contradictory to the null that there is no batch effect means having a lower jaccard score than we observe, so our $p$ is the proportion of test statistics less extreme than the observed statistic:
 
 ```{r, fig.width=8, fig.height=4}
-vline = data.frame(x=result$tstat.alt, type="t")
+vline = data.frame(x=dwi.result$tstat.alt, type="t")
 
-dat <- data.frame(sample="null", t=result$tstat.null)
+dat <- data.frame(sample="null", t=dwi.result$tstat.null)
 dat$sample <- factor(dat$sample)
 labs <- lapply(levels(dat$sample), function(samp) {
   TeX(sprintf("$\\tau_{%s}$", samp))
@@ -436,12 +436,12 @@ ggplot(data=dat, aes(t, group=sample, color=sample)) +
   geom_vline(data=vline, aes(xintercept=x, linetype=type)) +
   scale_color_discrete(name="Sample", breaks=dat$sample, labels=labs) +
   scale_linetype_manual(values=c("dashed"), name="Cutoff", breaks=c("t"),
-                        labels=lapply(sprintf("$\\tau_{observed} = %.3f", result$tstat.alt), TeX)) +
+                        labels=lapply(sprintf("$\\tau_{observed} = %.3f", dwi.result$tstat.alt), TeX)) +
   xlab(TeX("$\\tau$")) +
   ylab("Density") +
   scale_x_continuous(limits=c(0, 1)) +
   theme(panel.background=element_rect(fill="#ffffff")) +
-  ggtitle(TeX(sprintf("dMRI Bootstrap Test Statistics, $p$ = %.3f", result$p)))
+  ggtitle(TeX(sprintf("dMRI Permutation Test Statistics, $p$ = %.3f", dwi.result$p)))
 ```
 
 as we can see, the observed $\\tau_{observed}$ is significantly lower than
@@ -452,8 +452,7 @@ as we can see, the observed $\\tau_{observed}$ is significantly lower than
 nroi = 70
 atlases = c('desikan-2mm')
 
-fmri.dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS8',
-               'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+fmri.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
 
 graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = fmri.dsets,
                                             atlases = atlases, fmt='edgelist', rtype='array')
@@ -465,50 +464,6 @@ gcpy = graphs
 datasets = graphobj$dataset
 subjects = graphobj$subjects
 sessions = graphobj$sessions
-
-parse_class <- function(basepath, dsets, subjects) {
-  sex = list()
-  # disease = list()
-  age = list()
-  include = c()
-  for (dset in dsets) {
-    path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
-    tab = read.csv(path_to_file)
-    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
-    if (dset == 'KKI2009') {
-      sexm <- 'M'
-    } else if (dset == 'Templeton114') {
-      sexm <- 1
-    } else {
-      sexm <- 2
-    }
-    tab$AGE_AT_SCAN_1 <- factor(tab$AGE_AT_SCAN_1)
-    tab$SEX = tab$SEX == sexm
-    tab = tab[complete.cases(tab$SEX),]
-    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
-    for (idx in 1:dim(tab)[1]) {
-      subid = toString(tab[idx,]$SUBID)
-      sex[[subid]] = tab[idx,]$SEX
-      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
-      # disease[[subid]] = tab[idx,]$DSM_IV_TR
-    }
-  }
-  
-  sclass = array(NaN, dim=c(length(subjects)))
-  ageclass = sclass
-  # diseaseclass = sclass
-  for (i in 1:length(subjects)) {
-    subject = subjects[i]
-    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
-    idx = which(names(sex) == subid)
-    if (length(idx) >= 1) {
-      sclass[i] <- sex[[subid]]
-      ageclass[i] <- age[[subid]]
-      # diseaseclass[i] <- disease[[subid]]
-    }
-  }
-  return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
-}
 
 sexpath = '/home/eric/Documents/research/mgc-repos/fmribatch_notes/data/phenotypic_data/'
 class = parse_class(sexpath, fmri.dsets, subjects)
@@ -529,36 +484,36 @@ We conduct a synthetic bootstrap investigation following the above procedure:
 ```{r, fig.width=12, fig.height=8, echo=FALSE}
 fmri.bin_graphs = apply(fmri.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0.5))
 fmri.bin_graphs <- aperm(fmri.bin_graphs, c(2,3,1))
-result <- parametric_bootstrap(fmri.bin_graphs, fmri.sexs, fmri.datasets, verb=TRUE, nrep=100, tstat=tstat.jaccard)
+fmri.result <- parametric_bootstrap(fmri.bin_graphs, fmri.sexs, fmri.datasets, verb=FALSE, nrep=100, tstat=tstat.jaccard)
 ```
 
 we first visualize our set of subgraphs computed from each study using the sex class label and study as the batch label:
 
 ```{r, fig.width=8, fig.height=7}
-plot.zset(result$zset, result$alt.ssgs)
+plot.zset(fmri.result$zset, fmri.result$alt.ssgs)
 ```
 
 and we visualize the synthetically generated sub-graphs for each dataset from our synthetic bootstrap:
 
 ```{r, fig.width=8, fig.height=7}
-plot.zset(result$zset, result$null.ssgs)
+plot.zset(fmri.result$zset, fmri.result$null.ssgs)
 ```
 
 Along with the globally estimated sub-graph:
 
 ```{r, fig.height=4, fig.width=5}
-fmriu.plot.plot_graph(result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
+fmriu.plot.plot_graph(fmri.result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
                         title="Global SSG",
-                        limits=c(min(result$global.ssgs), max(result$global.ssgs)), xlabel = "ROI",
+                        limits=c(min(fmri.result$global.ssgs), max(fmri.result$global.ssgs)), xlabel = "ROI",
                         ylabel = "ROI") + theme(legend.position=NaN)
 ```
 
 finally, we visualzize a density estimate of the null, and compare with our observed test statistic, producing a $p$-value as the fraction of statistics under the null that are more contradictory to the null. Since our model attempts to show the similarity between the global and local sub-graphs using the jaccard index, being more contradictory to the null that there is no batch effect means having a lower jaccard score than we observe, so our $p$ is the proportion of test statistics less extreme than the observed statistic:
 
 ```{r, fig.width=8, fig.height=4}
-vline = data.frame(x=result$tstat.alt, type="t")
+vline = data.frame(x=fmri.result$tstat.alt, type="t")
 
-dat <- data.frame(sample="null", t=result$tstat.null)
+dat <- data.frame(sample="null", t=fmri.result$tstat.null)
 dat$sample <- factor(dat$sample)
 labs <- lapply(levels(dat$sample), function(samp) {
   TeX(sprintf("$\\tau_{%s}$", samp))
@@ -568,10 +523,29 @@ ggplot(data=dat, aes(t, group=sample, color=sample)) +
   geom_vline(data=vline, aes(xintercept=x, linetype=type)) +
   scale_color_discrete(name="Sample", breaks=dat$sample, labels=labs) +
   scale_linetype_manual(values=c("dashed"), name="Cutoff", breaks=c("t"),
-                        labels=lapply(sprintf("$\\tau_{observed} = %.3f", result$tstat.alt), TeX)) +
+                        labels=lapply(sprintf("$\\tau_{observed} = %.3f", fmri.result$tstat.alt), TeX)) +
   xlab(TeX("$\\tau$")) +
   ylab("Density") +
   scale_x_continuous(limits=c(0, 1)) +
   theme(panel.background=element_rect(fill="#ffffff")) +
-  ggtitle(TeX(sprintf("dMRI Bootstrap Test Statistics, $p$ = %.3f", result$p)))
+  ggtitle(TeX(sprintf("fMRI Permutation Test Statistics, $p$ = %.3f", fmri.result$p)))
+```
+
+# Across Modality
+
+Below, we test whether the batch effect is more significant in the dMRI than the fMRi connectomes. We do this by examining whether the difference in the observed vs the null test statistics is greater in the dMRI than the fMRI.
+
+```{r}
+dwi.delta <- dwi.result$tstat.null - dwi.result$tstat.alt
+fmri.delta <- fmri.result$tstat.null - fmri.result$tstat.alt
+
+across.delta <- rbind(data.frame(modality="dMRI", delta=dwi.delta), data.frame(modality="fMRI", delta=fmri.delta))
+ggplot(across.delta, aes(delta, group=modality, color=modality, fill=modality)) +
+  geom_density(alpha=0.4) +
+  xlab(TeX("$\\delta$")) +
+  ylab(TeX("Density")) +
+  ggtitle("Permutation Across Modality Comparison") +
+  scale_fill_discrete(name="Modality")
+
+t.test(dwi.delta, fmri.delta, alternative="greater", var.equal=FALSE)
 ```
