@@ -1,0 +1,577 @@
+---
+title: "Signal Subgraphing for Batch Effect Detection with Permutation Null"
+author: "Eric Bridgeford"
+date: "November 29, 2017"
+output: html_document
+---
+---
+title: "Mixed-Effects Modelling for MRI Batch Investigations"
+author: "Eric Bridgeford"
+date: "October 12, 2017"
+output: html_document
+---
+
+```{r, message=FALSE, warning=FALSE}
+# load packages
+#==========================#
+require(fmriutils)
+require(VCA)
+require(stringr)
+require(lme4)
+require(RColorBrewer)
+require(oro.nifti)
+require(reshape2)
+require(latex2exp)
+require(ggplot2)
+require(Rmisc)
+require(subgraphing)
+require(abind)
+
+# functions
+#==========================#
+
+xscale.log2 <- function(a=3, b=6, n=10) {
+  return(round(2^(seq(a, b, length.out=n))))
+}
+
+xscale.log10 <- function(a=1, b=3, n=10) {
+  return(round(10^(seq(a, b, length.out=n))))
+}
+
+# accepts a matrix and thresholds/binarizes it
+thresh_matrix = function(matrix, thresh=0.5) {
+  thr = quantile(matrix, thresh)
+  return(ifelse(matrix > thr, 1, 0))
+}
+```
+
+
+# Setting
+  
+## Task
+  
+Given:
+
++ $\mathbb{G}: \Omega \rightarrow \mathcal{G}$ is a graph-valued RV with samples $G_i \sim \mathbb{G}$.
++ For each $G_i \in \mathcal{G}$, we have $G_i = (V, E_i)$; that is, each $G_i$ is defined by a set of vertices $V$ and a set of edges $E_i$, where $w_i: V \times V \rightarrow \{0, 1\}$, and $w_i(e_{uv}) \in \{0, 1\}$. That is, each graph has binary edges.
++ We have a collection of classes $\mathcal{Y}$ where the collection of graphs in class $y_i$ have a class-conditional difference with the collection of graphs in class $y_j$ for $i \neq j$ comprising the signal present in the graphs.
++ $\mathbb{A}_{y, z}: \Omega \rightarrow \mathcal{A}_{y, z}$, an adjacency-matrix-valued RV with samples $A_{i | y_i = y, z_i = z} \sim \mathbb{A}_{y, z}$, where $\mathcal{A}_{y, z}$ is the space of possible adjacency-matrices and $A_{i | y_i = y, z} \in \mathcal{A}_y$.
++ $A_{i | y_i = y, z_i = z} \in \mathcal{A}_{y, z}$, and $\mathcal{A}_{y, z} \subseteq \mathbb{R}^{V \times V}$. 
++ Each graph $G_i$ can be represented as an adjacency-matrix $A_i$.
++ Within each graph, there exists some collection of edges $\mathcal{S}$ called the subgraph that contain the bulk of the class differences between the $y$s.
++ Class labels $z_i \in Z$, where $Z$ is a set of variables that will contribute random noise to our observations. This will be referred to as the batch-effect.
+
+Characterize the composition of signal to batch-effect present in the given connectomes, assuming both the fixed-effects and random-effects can be characterized as random inputs in a standard mixed-effects model.
+
+## Model
+
+Assume that the edge weights can be characterized by a bernoulli RV; that is:
+
+\begin{align}
+  \mathbb{A}_{uv | y, z} \sim Bern(p_{uv| y, z})
+\end{align}
+
+where $p_{uv| y, z}$ is the probability of edge $e_{uv}$ being connected for $y, z$.
+
+Then our likelihood function is simply:
+
+\begin{align}
+  L_{\mathbb{A}}(A_i; \theta) &= \prod_{(u, v) \in E_i} Bern(w_i(e_{uv}); p_{uv}) \\
+  &= \prod_{(u, v) \in E_i} p_{uv}^{w_i(e_{uv})}(1 - p_{uv})^{1 - w_i(e_{uv})}
+\end{align}
+
+# Estimators
+
+## Bernoulli Parameters
+
+Using MLE, it is easy to see that:
+
+\begin{align}
+  \hat{p}_{uv} = \frac{1}{n} \sum_{i=1}^n w_i(e_{uv})
+\end{align}
+
+where $w_i(e_{uv}) \in \{0, 1\}$ is the binary edge weight of edge $e_{uv}$. 
+
+Note that if $w_i(e_{uv}) = 0 \;\forall i$, then $p_{uv} = 0$, which is undesirable since we only have a finite sample (and successive samples where $w_i(e_{uv})) \neq 0$ would lead to poor model performance), and vice versa for $p_{uv} = 1$ when $w_i(e_{uv}) = 0 \;\forall i$. Then consider the smoothed estimator:
+
+\begin{align}
+  p_{uv} = \begin{cases}
+    n_n & max_{i}(w_i(e_{uv})) = 0 \\
+    1-n_n & max_{i}(w_i(e_{uv})) = 1 \\
+    p_{uv} & else
+  \end{cases}
+\end{align}
+
+## Priors
+
+Here, we take the maximum likelihood estimators for the prior probabilities, which assuming our data is sampled iid from our population, should suffice:
+
+\begin{align}
+  \hat{\pi}_y = \frac{n_y}{n}
+\end{align}
+
+where $n_y = \sum_{i =1}^n \mathbb{I}\{y_i = y\}$.
+
+## Incoherent Subgraph
+
+### Test
+
++ [Fisher's Exact Test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test): Given the following contingency table:
+
+| Edge | Class 1 | Class 2 |
+| ---- | ------- | ------- |
+| Present | a | b |
+| Not Present | c  | d |
+
+where $a=n_{uv | y = 1}$, $b=n_{uv | y = 2}$, $c=n_{y = 1} - n_{uv | y = 1}$, $d=n_{y = 1} - n_{uv | y = 1}$.
+
+we can test whether the differences of proportions we identify is significant with the following test:
+
+\begin{align*}
+  H_0: \textrm{the difference of proportions is insigificant} \\
+  H_A: \textrm{the difference of proportions is significant}
+\end{align*}
+
+Assuming the contingency table follows the [hypergeometric distribution](https://en.wikipedia.org/wiki/Hypergeometric_distribution), we can formulate the following test-statistic:
+
+\begin{align*}
+  \mathcal{T}_{fisher, uv} = \frac{\begin{pmatrix}n_{uv} \\ a_{uv} + b_{uv}\end{pmatrix}\begin{pmatrix}c_{uv} + d_{uv} \\ c_{uv}\end{pmatrix}}{\begin{pmatrix}n_{uv} \\ a_{uv} + c_{uv}\end{pmatrix}}
+\end{align*}
+
+where $n = a_{uv} + b_{uv} + c_{uv} + d_{uv}$.
+
+### P-value
+
+We can compute a p-value of falsely rejecting the null hypothesis by simply finding the area:
+
+\begin{align*}
+    p = \int_{-\mathcal{T}_{observed}}^{\infty}p(x) dx = 1 - \int_{-\infty}^{\mathcal{T}_{observed}} p(x)dx
+\end{align*}
+
+Fisher has shown that the probability of obtaining any such set of values is exactly the test-statistic, so $p = \mathcal{T}_{observed}$.
+
+### Power
+
+The statistical power can be computed as the inverse of the probability of making a Type II ($\beta$) error, $1 - \beta$. A type II error can be defined as follows:
+
+\begin{align*}
+    \beta = \mathbb{P}(\textrm{reject $H_A$ in favor of $H_0$ | $H_A$ is true}) = \mathbb{P}(\mathcal{T}_{observed} < \mathcal{T}_{critical})
+\end{align*}
+
+In this case, $\mathcal{T}_{critical} = \alpha$, and $\mathcal{T}_{observed} = p$. We can formulate synthetic testing power using a post-hoc test.
+
+## pseudo-code
+
+To estimate the incoherent subgraph, we  consider the following algorithm:
+
+incoherent_subgraph(G, e):
+
+  + assemble a contingency matrix, per edge, counting the number of occurences of a graph from each class having or not having a connection.
+  + compute the p-value of Fisher's exact test on the contingency matrix for each edge to produce the test statistic $\mathcal{T}_{uv}$. The $p$ value signifies the probability of the null hypothesis, that there is no class-conditional difference present for edge $uv$, versus the alternative that there is a class-conditional difference present for edge $uv$.
+  + order the test statistics in increasing order, such that $\mathcal{T}^{(1)}_{uv} \leq \mathcal{T}^{(2)}_{u'v'} \leq ...$ for all the edges.
+  + choose the first $e$ edges as estimator of the signal-subgraph $\hat{\mathcal{S}}$.
+
+## Investigation
+
+For our investigation, we will compute the within-study sub-graphs relative the sex-label, and the within-modality sub-graphs relative the sex-label. We will then perform a synthetic, parametric bootstrap to determine the significance of any present difference in the within-study vs. within-modality sub-graphs.
+
+### Parametric Bootstrap
+
++ compute the within-modality $P$ for all of the graphs.
++ compute the within-modality, per-class $P$s, $P_{y = y_i}$, for each of the two sex classes.
++ for (i in 1:nrep):
+  + 
+
+# Real Data
+
+```{r}
+sig = 0.01  # global param for significance threshold
+nrep = 100  # number of replicates for synthetic bootstrap to get null
+
+# Sum of Squared Residual Test Statistic
+#
+# local [n, n, d]: is the sum of all dataset ssgs estimated
+# global [n, n]: is the globally estimated ssg using all of the data points
+tstat.ssr <- function(local, global) {
+  local <- apply(local, c(1,2), sum)
+  return(sum((local/max(local) - global)^2))
+}
+
+# Jaccard Index Test Statistic
+# returns mean jaccard index btwn the ssgs within dataset and global
+tstat.jaccard <- function(local, global) {
+  d <- dim(local)[3]
+  idx.glob <- which(global > 0)
+  jaccard <- array(0, dim=c(d))
+  for (i in 1:dim(local)[3]) {
+    idx.loc <- which(local[,,i] > 0)
+    jaccard[i] <- length(intersect(idx.loc, idx.glob))/length(union(idx.loc, idx.glob))
+  }
+  return(mean(jaccard))
+}
+
+parse_class <- function(basepath, dsets, subjects) {
+  sex = list()
+  # disease = list()
+  age = list()
+  include = c()
+  for (dset in dsets) {
+    path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
+    tab = read.csv(path_to_file)
+    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+    if (dset == 'KKI2009') {
+      sexm <- 'M'
+    } else if (dset == 'Templeton114') {
+      sexm <- 1
+    } else {
+      sexm <- 2
+    }
+    tab$AGE_AT_SCAN_1 <- factor(tab$AGE_AT_SCAN_1)
+    tab$SEX = tab$SEX == sexm
+    tab = tab[complete.cases(tab$SEX),]
+    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+    for (idx in 1:dim(tab)[1]) {
+      subid = toString(tab[idx,]$SUBID)
+      sex[[subid]] = tab[idx,]$SEX
+      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+      # disease[[subid]] = tab[idx,]$DSM_IV_TR
+    }
+  }
+  
+  sclass = array(NaN, dim=c(length(subjects)))
+  ageclass = sclass
+  # diseaseclass = sclass
+  for (i in 1:length(subjects)) {
+    subject = subjects[i]
+    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
+    idx = which(names(sex) == subid)
+    if (length(idx) >= 1) {
+      sclass[i] <- sex[[subid]]
+      ageclass[i] <- age[[subid]]
+      # diseaseclass[i] <- disease[[subid]]
+    }
+  }
+  return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
+}
+
+
+# parametric bootstrap code to compute whether under the independent edge model there exists a batch effect
+# samp: [n n s] array consisting of our sample.
+# Y: [s] array consisting of our set of signal labels.
+# Z: [s] array consisting of our set of batch-effect labels.
+# nrep: [1] the number of replicates of our bootstrapped simulation.
+parametric_bootstrap <- function(samp, Y, Z, nrep=100, tstat=tstat, sig=.01, verb=FALSE) {
+  
+  global.est <- sg.bern.subgraph_estimator(samp, Y)
+  # compute test statistics per edge from the contingency matrix
+  global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
+  global.ssg <- 1*(global.tstat < sig)
+  global.sz <- sum(global.ssg)
+
+  zset = unique(Z)
+
+  # alternate consists of the tstat computed between the subgraphs estimated per-z
+  # with the global sub-graph
+  zset.sz <- array(NaN, dim=c(length(zset)))
+  alt.ssgs <- array(0, dim=c(nroi, nroi, length(zset)))  # save the ssgs per dataset
+  for (i in 1:length(zset)) {
+    ss = Z == zset[i]
+    subset.gr = samp[,,ss]
+    subset.Y = Y[ss]
+    sg_ests <- sg.bern.subgraph_estimator(subset.gr, subset.Y)
+    # compute test statistics per edge from the contingency matrix
+    tstats <- sg.bern.edge_test(sg_ests$cont_matrix)
+    sg_edge <- sg.bern.subgraph_edge_estimation(tstats, global.sz)
+    sg <- array(0, dim=c(nroi, nroi))
+    sg[sg_edge] <- 1
+    alt.ssgs[,,i] = sg
+  }
+  
+  tstat.alt <- do.call(tstat, list(alt.ssgs, global.ssg))
+
+  # null consists of the tstat computed between the subgraphs of synthetic samples
+  # given P.hat, the probability matrix of the entire sample, P[i].hat, the class-conditional Pmatrix for class i
+  # construct P0.syn and P1.syn, which are comprised with P[i].syn(u, v) = P.hat(u, v) when (u, v) \notin S, the global subgraph
+  # and P[#].syn(u, v) = P[#].hat(u, v) when (u, v) \in S
+  # that is, construct  class-conditional probability matrices where if there does not exist any batch-effect across the Zs,
+  # we will get the distribution of the null that the samples within each study are chosen independently with the same P
+  Y.class <- global.est$classes
+  P <- sg.bern.graph_estimator(samp)$p  # get P for the entire dataset, and use P0 and P1 from dwi.global.est above
+  Pclass <- array(NaN, dim=c(nroi, nroi, length(global.est$classes)))
+  for (k in 1:length(Y.class)) {
+    pclass <- P
+    classp <- global.est$p[,,k]
+    pclass[global.ssg > 0] <- classp[global.ssg > 0]
+    Pclass[,,k] <- pclass
+  }
+  
+  tstat.null <- array(NaN, dim=c(nrep))
+  for (i in 1:nrep) {
+    zset.ssgs <- array(0, dim=c(nroi, nroi, length(zset)))
+    yclass <- list()
+    for (k in 1:length(global.est$classes)) {
+      yclass[[k]] <- which(Y == global.est$classes[k])  # indices of where each class is
+    }
+    for (j in 1:length(zset)) {
+      ss = Z == zset[j]  # compute which indices correspond to our current study
+      subset.Y = Y[ss]  # partition the class abels for the study we want to construct synthetic data under the null for
+      ns <- array(0, dim=c(length(global.est$classes)))
+      dats <- list()  # synthetic null data
+      labs <- list()  # labels for synthetic null data
+      for (k in 1:length(global.est$classes)) {
+        ns[k] <- sum(subset.Y == global.est$classes[k])  # compute the number of each class we will sample for this synthetic study
+        idx.samp <- sample(yclass[[k]], ns[k], replace=FALSE)  # sample ns[k] graphs from our graphs from all studies
+        yclass[[k]] <- setdiff(yclass[[k]], idx.samp)  # remove already-chosen indices from our particular sample
+        dats[[k]] <- samp[,,idx.samp]  # and sample from the original collection of graphs
+        labs[[k]] <- Y[idx.samp]  # along w the appropriate labels
+      }
+      dset.null.dat <- abind(dats, along=3)
+      dset.null.labs <- abind(labs, along=1)
+      sg_ests <- sg.bern.subgraph_estimator(dset.null.dat, dset.null.labs)
+      # compute test statistics per edge from the contingency matrix
+      tstats <- sg.bern.edge_test(sg_ests$cont_matrix)
+      sg_edge <- sg.bern.subgraph_edge_estimation(tstats, global.sz)
+      sg <- array(0, dim=c(nroi, nroi))
+      sg[sg_edge] <- 1
+      zset.ssgs[,,j] = sg
+    }
+    if (verb) {
+      print(i)
+    }
+    tstat.null[i] <- do.call(tstat, list(zset.ssgs, global.ssg))
+  }
+  return(list(p=sum(tstat.null < tstat.alt)/nrep, tstat.null=tstat.null, tstat.alt=tstat.alt,
+         alt.ssgs=alt.ssgs, null.ssgs=zset.ssgs, global.ssgs=global.ssg, zset=zset))
+}
+
+plot.zset <- function(zset, zset.ssgs) {
+  zset_plots <- list()
+  counter <- 1
+  for (i in 1:length(zset)) {
+    zset_plots[[counter]] <- fmriu.plot.plot_graph(zset.ssgs[,,i],  legend.name=TeX("$I_{uv}$"),
+                        title=dwi.dsets[i],
+                        limits=c(min(zset.ssgs), max(zset.ssgs)), xlabel = "ROI",
+                        ylabel = "ROI") + theme(legend.position=NaN)
+    counter <- counter + 1
+  }
+  
+  return(multiplot(plotlist = zset_plots, cols = ceiling(sqrt(length(zset)))))
+}
+
+```
+
+## Diffusion
+
+```{r}
+nroi = 70
+atlases = c("desikan")
+dwi.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', datasets = dwi.dsets,
+                                            atlases = atlases, gname = "graphs", fmt='edgelist', rtype='array')
+graphs = graphobj$graphs
+```
+
+```{r, warning=FALSE}
+gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+sexpath = '/home/eric/Documents/research/mgc-repos/fmribatch_notes/data/phenotypic_data/'
+class = parse_class(sexpath, dwi.dsets, subjects)
+sexs = class$sex
+# dwi.diseases = class$disease
+ages = class$age
+
+dwi.graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+dwi.datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+dwi.subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+dwi.sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+dwi.ages = ages[!is.nan(ages) & !is.nan(sexs)]
+dwi.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
+```
+
+We conduct a synthetic bootstrap investigation following the above procedure:
+
+```{r, fig.width=12, fig.height=8, echo=FALSE}
+dwi.bin_graphs = apply(dwi.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
+dwi.bin_graphs <- aperm(dwi.bin_graphs, c(2,3,1))
+result <- parametric_bootstrap(dwi.bin_graphs, dwi.sexs, dwi.datasets, verb=FALSE, nrep=100, tstat=tstat.jaccard)
+```
+
+we first visualize our set of subgraphs computed from each study using the sex class label and study as the batch label:
+
+```{r, fig.width=8, fig.height=7}
+plot.zset(result$zset, result$alt.ssgs)
+```
+
+and we visualize the synthetically generated sub-graphs for each dataset from our synthetic bootstrap:
+
+```{r, fig.width=8, fig.height=7}
+plot.zset(result$zset, result$null.ssgs)
+```
+
+Along with the globally estimated sub-graph:
+
+```{r, fig.height=4, fig.width=5}
+fmriu.plot.plot_graph(result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
+                        title="Global SSG",
+                        limits=c(min(result$global.ssgs), max(result$global.ssgs)), xlabel = "ROI",
+                        ylabel = "ROI") + theme(legend.position=NaN)
+```
+
+finally, we visualzize a density estimate of the null, and compare with our observed test statistic, producing a $p$-value as the fraction of statistics under the null that are more contradictory to the null. Since our model attempts to show the similarity between the global and local sub-graphs using the jaccard index, being more contradictory to the null that there is no batch effect means having a lower jaccard score than we observe, so our $p$ is the proportion of test statistics less extreme than the observed statistic:
+
+```{r, fig.width=8, fig.height=4}
+vline = data.frame(x=result$tstat.alt, type="t")
+
+dat <- data.frame(sample="null", t=result$tstat.null)
+dat$sample <- factor(dat$sample)
+labs <- lapply(levels(dat$sample), function(samp) {
+  TeX(sprintf("$\\tau_{%s}$", samp))
+})
+ggplot(data=dat, aes(t, group=sample, color=sample)) +
+  geom_line(stat="density", size=1, adjust=1.5) +
+  geom_vline(data=vline, aes(xintercept=x, linetype=type)) +
+  scale_color_discrete(name="Sample", breaks=dat$sample, labels=labs) +
+  scale_linetype_manual(values=c("dashed"), name="Cutoff", breaks=c("t"),
+                        labels=lapply(sprintf("$\\tau_{observed} = %.3f", result$tstat.alt), TeX)) +
+  xlab(TeX("$\\tau$")) +
+  ylab("Density") +
+  scale_x_continuous(limits=c(0, 1)) +
+  theme(panel.background=element_rect(fill="#ffffff")) +
+  ggtitle(TeX(sprintf("dMRI Bootstrap Test Statistics, $p$ = %.3f", result$p)))
+```
+
+as we can see, the observed $\\tau_{observed}$ is significantly lower than
+
+### Functional
+
+```{r}
+nroi = 70
+atlases = c('desikan-2mm')
+
+fmri.dsets = c('BNU1', 'BNU2', 'BNU3', 'HNU1', 'IBATRT', 'IPCAS1', 'IPCAS2', 'IPCAS8',
+               'NYU1', 'SWU1', 'SWU2', 'SWU3', 'SWU4', 'UWM', 'XHCUMS')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = fmri.dsets,
+                                            atlases = atlases, fmt='edgelist', rtype='array')
+graphs = graphobj$graphs
+```
+
+```{r, warning=FALSE}
+gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+parse_class <- function(basepath, dsets, subjects) {
+  sex = list()
+  # disease = list()
+  age = list()
+  include = c()
+  for (dset in dsets) {
+    path_to_file = file.path(basepath, paste(dset, "_phenotypic_data.csv", sep=""))
+    tab = read.csv(path_to_file)
+    tab$SEX[tab$SEX == '#' | is.na(tab$SEX) | is.nan(tab$SEX)] = NaN
+    if (dset == 'KKI2009') {
+      sexm <- 'M'
+    } else if (dset == 'Templeton114') {
+      sexm <- 1
+    } else {
+      sexm <- 2
+    }
+    tab$AGE_AT_SCAN_1 <- factor(tab$AGE_AT_SCAN_1)
+    tab$SEX = tab$SEX == sexm
+    tab = tab[complete.cases(tab$SEX),]
+    tab$AGE_AT_SCAN_1 = as.numeric(levels(tab$AGE_AT_SCAN_1))[tab$AGE_AT_SCAN_1]
+    for (idx in 1:dim(tab)[1]) {
+      subid = toString(tab[idx,]$SUBID)
+      sex[[subid]] = tab[idx,]$SEX
+      age[[subid]] = tab[idx,]$AGE_AT_SCAN_1
+      # disease[[subid]] = tab[idx,]$DSM_IV_TR
+    }
+  }
+  
+  sclass = array(NaN, dim=c(length(subjects)))
+  ageclass = sclass
+  # diseaseclass = sclass
+  for (i in 1:length(subjects)) {
+    subject = subjects[i]
+    subid = sub('^0+(?=[1-9])', '', str_extract(subject, '(?<=sub-).*'), perl=TRUE)
+    idx = which(names(sex) == subid)
+    if (length(idx) >= 1) {
+      sclass[i] <- sex[[subid]]
+      ageclass[i] <- age[[subid]]
+      # diseaseclass[i] <- disease[[subid]]
+    }
+  }
+  return(list(sex=sclass, age=ageclass))#, disease=diseaseclass))
+}
+
+sexpath = '/home/eric/Documents/research/mgc-repos/fmribatch_notes/data/phenotypic_data/'
+class = parse_class(sexpath, fmri.dsets, subjects)
+sexs = class$sex
+# dwi.diseases = class$disease
+ages = class$age
+
+fmri.graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+fmri.datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+fmri.subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+fmri.sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+fmri.ages = ages[!is.nan(ages) & !is.nan(sexs)]
+fmri.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
+```
+
+We conduct a synthetic bootstrap investigation following the above procedure:
+
+```{r, fig.width=12, fig.height=8, echo=FALSE}
+fmri.bin_graphs = apply(fmri.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0.5))
+fmri.bin_graphs <- aperm(fmri.bin_graphs, c(2,3,1))
+result <- parametric_bootstrap(fmri.bin_graphs, fmri.sexs, fmri.datasets, verb=TRUE, nrep=100, tstat=tstat.jaccard)
+```
+
+we first visualize our set of subgraphs computed from each study using the sex class label and study as the batch label:
+
+```{r, fig.width=8, fig.height=7}
+plot.zset(result$zset, result$alt.ssgs)
+```
+
+and we visualize the synthetically generated sub-graphs for each dataset from our synthetic bootstrap:
+
+```{r, fig.width=8, fig.height=7}
+plot.zset(result$zset, result$null.ssgs)
+```
+
+Along with the globally estimated sub-graph:
+
+```{r, fig.height=4, fig.width=5}
+fmriu.plot.plot_graph(result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
+                        title="Global SSG",
+                        limits=c(min(result$global.ssgs), max(result$global.ssgs)), xlabel = "ROI",
+                        ylabel = "ROI") + theme(legend.position=NaN)
+```
+
+finally, we visualzize a density estimate of the null, and compare with our observed test statistic, producing a $p$-value as the fraction of statistics under the null that are more contradictory to the null. Since our model attempts to show the similarity between the global and local sub-graphs using the jaccard index, being more contradictory to the null that there is no batch effect means having a lower jaccard score than we observe, so our $p$ is the proportion of test statistics less extreme than the observed statistic:
+
+```{r, fig.width=8, fig.height=4}
+vline = data.frame(x=result$tstat.alt, type="t")
+
+dat <- data.frame(sample="null", t=result$tstat.null)
+dat$sample <- factor(dat$sample)
+labs <- lapply(levels(dat$sample), function(samp) {
+  TeX(sprintf("$\\tau_{%s}$", samp))
+})
+ggplot(data=dat, aes(t, group=sample, color=sample)) +
+  geom_line(stat="density", size=1, adjust=1.5) +
+  geom_vline(data=vline, aes(xintercept=x, linetype=type)) +
+  scale_color_discrete(name="Sample", breaks=dat$sample, labels=labs) +
+  scale_linetype_manual(values=c("dashed"), name="Cutoff", breaks=c("t"),
+                        labels=lapply(sprintf("$\\tau_{observed} = %.3f", result$tstat.alt), TeX)) +
+  xlab(TeX("$\\tau$")) +
+  ylab("Density") +
+  scale_x_continuous(limits=c(0, 1)) +
+  theme(panel.background=element_rect(fill="#ffffff")) +
+  ggtitle(TeX(sprintf("dMRI Bootstrap Test Statistics, $p$ = %.3f", result$p)))
+```
