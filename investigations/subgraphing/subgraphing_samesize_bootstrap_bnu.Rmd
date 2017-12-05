@@ -304,7 +304,6 @@ parametric_bootstrap <- function(samp, Y, Z, nrep=100, tstat=tstat, sig=.01, ver
   global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
   global.ssg <- 1*(global.tstat < sig)
   global.sz <- sum(global.ssg)
-
   # alternate consists of the tstat computed between the subgraphs estimated per-z
   # with the global sub-graph
   result.alt <- model.alternative(samp, Y, Z, global.ssg, tstat=tstat, sig=sig, verb=verb, classify=TRUE)
@@ -400,7 +399,7 @@ plot.zset <- function(zset, zset.ssgs, lhat=NaN) {
 ```{r}
 nroi = 70
 atlases = c("desikan")
-dwi.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
+dwi.dsets = c('BNU1', 'BNU3')
 
 graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', datasets = dwi.dsets,
                                             atlases = atlases, gname = "graphs", fmt='edgelist', rtype='array')
@@ -499,7 +498,7 @@ nroi = 70
 atlases = c('desikan-2mm')
 
 
-fmri.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
+fmri.dsets = c('BNU1', 'BNU3')
 
 graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = fmri.dsets,
                                             atlases = atlases, fmt='edgelist', rtype='array')
