@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>fMRI Batch: SSG Investigations</title>
+
+        <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+        <meta name="author" content="Hakim El Hattab">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="../../../reveal.js/css/reveal.css">
+        <link rel="stylesheet" href="../../../reveal.js/css/theme/black.css" id="theme">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="../../../reveal.js/lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="../../../reveal.js/lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section>
+                    <h1>Signal Subgraph Investigations</h1>
+                    <h3></h3>
+                    <p>
+                        <small>Created by <a href="http://ericwb.me">Eric Bridgeford</a> / Contact: <a href="http://github.com/ebridge2">@ebridge2</a></small>
+                    </p>
+                </section>
+
+                <section>
+                    <section>
+                        <h1>Model</h1>
+                    </section>
+
+                    <section>
+                        <h3>Data</h3>
+                        <ul>
+                            <li>Given: $n$ samples of data-tuples, $\{(g_i, y_i, z_i)\}_{i=1}^{n_1}$, $\{(g_i, y_i, z_i)\}_{i=1}^{n_2}$, $n_1 + n_2 = n$</li>
+                            <li>$g_i$ is a graph $(E, V, w)$ where $w(v_i, v_j) = w_{ij}$ with adjacency-matrix $A^{(i)}$</li>
+                            <li>a set of effects $y_i$ that we anticipate will be signal</li>
+                            <li>a set of effects $z_i$ that we anticipate will be noise due to batch effects</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Task</h3>
+                        <ul>
+                            <li>Characterize the composition of signal to batch-effect present</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Signal Subgraph Model</h3>
+                        <ul>
+                            <li>Estimate a probability matrix $P_{y_i}$ for each possible signal class $y_i$</li>
+                            <li>Determine the edge set $\mathcal{S} = \{(u, v) \in E(G)\}$ that capture the greatest class difference between the $y_i$s</li>
+                        </ul>
+                        $$L_{A_y}(A, y, \theta) = \prod_{(u, v) \in \mathcal{S}}Bern\left(a_{uv}; p_{uv}\right)\pi_y\prod_{(u, v) \notin \mathcal{S}}Bern\left(a_{uv}; p_{uv}\right)$$
+                    </section>
+
+                    <section>
+                        <h3>Classification</h3>
+                        <ul>
+                            <li>Classify depending on the most-likely class based on the likelihood model</li>
+                            <li>$$\hat{h}(A, \tau_n) = \textrm{argmax}_{y \in Y}\prod_{(u, v) \in \mathcal{S}}Bern\left(a_{uv}; \hat{p}_{uv | y}\right)\hat{\pi}_y$$</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Batch Detection</h3>
+                        <ol>
+                            <li>Pool the data and estimate a ssg based on all of the data, $\mathcal{S}_{global}$</li>
+                            <li>For each $z_i \in Z$, estimate a local ssg over each $z_i$, $\mathcal{S}_{z_i}$</li>
+                            <li>Test statistic is $\tau = \frac{1}{|Z|} \sum_{i=1}^{|Z|} jaccard(\mathcal{S}_{z_i}, \mathcal{S}_{global})$</li>
+                            <li>How similar is the globally estimated ssg to each locally estimated ssg?</li>
+                        </ol>
+                    </section>
+
+                    <section>
+                        <h3>Permutation approach for $p$-value</h3>
+                        <ol>
+                            <li>Pool all of the data, ignoring $z_j$ labels, but retaining $y_i$ labels.</li>
+                            <li>for each set $z_j \in Z$, randomly select with replacement $n_{y_i}^j$ examples of class $y_i$, where $n_{y_i}^j$ are the number of $y_i$ in the original partition $z_j$.</li>
+                            <li>Compute the ssg and test statistic appropriately over all $z_j$ for a given permutation iteration.</li>
+                        </ol>
+                    </section>
+                </section>
+
+
+                <section>
+                    <section>
+                        <h1>Results</h1>
+                    </section>
+
+                    <section>
+                        <h3>Does there exist some sort of batch effect in MRI?</h3>
+                        <li>Tried with consistent demographics, and non-consistent demographics, as well as with same scanning site repeated multiple times</li>
+                    </section>
+
+                    <section>
+                        <h3>dMRI, no demographic consideration set</h3>
+                        Consider sample with all dMRI studies included
+                        <img src="./dMRI_nodem.png" alt=""/>
+                    </section>
+                    <section>
+                        <h3>fMRI, no demographic consideration set</h3>
+                        consider sample with all fMRI studies included
+                        <img src="./fMRI_nodem.png" alt=""/>
+                    </section>
+                    <section>
+                        <h3>dMRI, same demographic set</h3>
+                        consider dMRI studies with fraction male $.5 \pm .03$ and taken in china (BNU1, BNU3, HNU1, SWU4)
+                        <img src="./dMRI_dem.png" alt=""/>
+                    </section>
+                    <section>
+                        <h3>fMRI, same demographic set</h3>
+                        consider fMRI studies where fraction male $.5 \pm .03$ and taken in china (BNU1, BNU3, HNU1, SWU4)
+                        <img src="./fMRI_dem.png" alt=""/>
+                    </section>
+                    <section>
+                        <h3>dMRI, same site</h3>
+                        consider 2 dMRI studies with samples taken at same site (BNU1 and BNU3)
+                        <img src="./dMRI_site.png" alt=""/>
+                    </section>
+                    <section>
+                        <h3>fMRI, same site</h3>
+                        consider 2 fMRI studies with samples taken at same site (BNU1 and BNU3)
+
+                        <img src="./fMRI_site.png" alt=""/>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h1>Next Week</h1>
+                        <ul>
+                            <li>Consider different possible demographic issues</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Cases 1</h3>
+                        <ul>
+                            <li>Within a study with TRT, partition into 2 sets of sessions, the first session and second session</li>
+                            <li>Is there a batch effect between sessions of a particular study?</li>
+                            <li>ie, BNU1, session1 v session 2</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Cases 2</h3>
+                        <ul>
+                            <li>Within a study, partition into 2 sets of subjects, the first half of subjects and second half of subjects</li>
+                            <li>Is there a batch effect between subjects in a particular study?</li>
+                            <li>ie, first half of BNU1 vs second half of BNU1.</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Cases 3</h3>
+                        <ul>
+                            <li>Take 2 out-of-sample studies at same site. Sets are study 1 at site $\alpha$, and study 2 at site $\alpha$.</li>
+                            <li>Is there a batch effect between studies with site held fixed?</li>
+                            <li>ie, BNU1 and BNU3, both taken at Beijing Normal with same demographics.</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Cases 4</h3>
+                        <ul>
+                            <li>Take 2 studies with same demographics. Sets are study 1 at site $\alpha$ with demographics $d_1$, and study 2 at site $\beta$ with demographics $d_1$.</li>
+                            <li>Is there a batch effect between sites with demographic held fixed?</li>
+                            <li>ie, BNU1 and HNU1 both have same demographics (race and age and sex).</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Cases 5</h3>
+                        <ul>
+                            <li>Take 2 studies with not same demographics. Sets are study 1 at site $\alpha$ with demographics $d_1$, and study 2 at site $\beta$ with demographics $d_2$, $d_1 \neq d_2$.</li>
+                            <li>Is there a batch effect between sites with demographic not the same?</li>
+                            <li>ie, BNU1 (Beijing Normal University) v. UWM (University of Wisconsin-Madison) taken on different continents, and different races of subjects.</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Presentation of Results</h3>
+                        <ul>
+                            <li>Plot 1: As we vary $|\mathcal{S}|$, what is the impact on 2-fold cross-validated error between set 1 and set 2?</li>
+                            <li>Plot 2: As we vary $|\mathcal{S}|$, what is the impact on the test statistic $\tau_{obserrved}$?</li>
+                            <li>Plot 3: As we vary $|\mathcal{S}|$, what is the impact on the $p$-value of the test statistic?< using the synthetic-permutation approach described?</li>
+                            <li>How well can we train a logistic regression classifier on the site to identify sex, and how does this compare with chance?</li>
+                        </ul>
+                    </section>
+                </section>
+
+            </div>
+
+        </div>
+
+        <script src="../../../reveal.js/lib/js/head.min.js"></script>
+        <script src="../../../reveal.js/js/reveal.js"></script>
+
+        <script>
+
+            // More info https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                math: {
+                    // mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+                    config: 'TeX-AMS_HTML-full'
+                },
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+                // More info https://github.com/hakimel/reveal.js#dependencies
+                dependencies: [
+                    { src: '../../../reveal.js/plugin/math/math.js', async: true },
+                    { src: '../../../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: '../../../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: '../../../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: '../../../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: '../../../reveal.js/plugin/zoom-js/zoom.js', async: true },
+                    { src: '../../../reveal.js/plugin/notes/notes.js', async: true }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
