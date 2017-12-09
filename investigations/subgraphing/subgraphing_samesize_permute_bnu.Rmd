@@ -186,7 +186,7 @@ For our investigation, we will compute the within-study sub-graphs relative the 
 
 ```{r}
 sig = 0.01  # global param for significance threshold
-nrep = 200  # number of replicates for synthetic bootstrap to get null
+nrep = 100  # number of replicates for synthetic bootstrap to get null
 
 # Sum of Squared Residual Test Statistic
 #
@@ -289,19 +289,60 @@ model.alternative <- function(samp, Y, Z, global.ssg, tstat=tstat, sig=.01, verb
   return(ret)
 }
 
+subgraph.dset_lhat <- function(samp, Y, Z, global_sg, alt.counts, sg_ests, tstat=tstat) {
+  zset = unique(Z)
+  niter <- (length(zset)+1)*length(zset)
+  count = array(0, dim=c(niter))
+  dataset = array(NaN, dim=c(niter))
+  lhat = array(0, dim=c(niter))
+  for (i in 0:length(zset)) {
+    if (i > 0) {
+      sg <- which(alt.counts == i)  # get the appropriate edges 
+    } else if (i == 0) {
+      sg <- which(global_sg > 0)
+    }
+    for (j in 1:length(zset)) {
+      ss = Z == zset[j]
+      subset.gr = samp[,,ss]
+      subset.Y = Y[ss]
+      iter <- (i)*(length(zset) + 1) + j
+      Yhat <- sg.bern.subgraph_classifier(subset.gr, sg, sg_ests$p, sg_ests$pi, sg_ests$classes)
+      lhat[iter] <- (sum(ss) - sum(Yhat$Yhat == Y[ss]))/sum(ss)
+      dataset[iter] <- zset[j]
+      count[iter] <- i
+      if (i > 0) {
+        count[iter] <- i
+      } else if (i == 0) {
+        count[iter] <- 'global sg'
+      }
+    }
+    iter <- iter + 1
+    dataset[iter] <- "global"
+    if (i > 0) {
+      count[iter] <- i
+    } else if (i == 0) {
+      count[iter] <- 'global sg'
+    }
+    Yhat <- sg.bern.subgraph_classifier(samp, sg, sg_ests$p, sg_ests$pi, sg_ests$classes)
+    lhat[iter] <- (length(Y) - sum(Yhat$Yhat == Y))/length(Y)
+  }
+  result <- data.frame(count=count, dataset=dataset, lhat=lhat)
+  return(result)
+}
+
 # permutation test code to compute whether under the independent edge model there exists a batch effect
 # samp: [n n s] array consisting of our sample.
 # Y: [s] array consisting of our set of signal labels.
 # Z: [s] array consisting of our set of batch-effect labels.
 # nrep: [1] the number of replicates of our bootstrapped simulation.
-permutation_test <- function(samp, Y, Z, nrep=100, tstat=tstat, sig=.01, verb=FALSE) {
+permutation_test <- function(samp, Y, Z, nrep=100, p, pi, classes, tstat=tstat, sig=.01, verb=FALSE) {
   zset = unique(Z)
+  
   global.est <- sg.bern.subgraph_estimator(samp, Y)
   # compute test statistics per edge from the contingency matrix
   global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
   global.ssg <- 1*(global.tstat < sig)
   global.sz <- sum(global.ssg)
-
   # alternate consists of the tstat computed between the subgraphs estimated per-z
   # with the global sub-graph
   result.alt <- model.alternative(samp, Y, Z, global.ssg, tstat=tstat, sig=sig, verb=verb, classify=TRUE)
@@ -320,15 +361,15 @@ permutation_test <- function(samp, Y, Z, nrep=100, tstat=tstat, sig=.01, verb=FA
   # that is, construct  class-conditional probability matrices where if there does not exist any batch-effect across the Zs,
   # we will get the distribution of the null that the samples within each study are chosen independently with the same P
   Y.class <- global.est$classes
-  P <- sg.bern.graph_estimator(samp)$p  # get P for the entire dataset, and use P0 and P1 from dwi.global.est above
-  Pclass <- array(NaN, dim=c(nroi, nroi, length(global.est$classes)))
-  for (k in 1:length(Y.class)) {
-    pclass <- P
-    classp <- global.est$p[,,k]
-    pclass[global.ssg > 0] <- classp[global.ssg > 0]
-    Pclass[,,k] <- pclass
-  }
-  
+    P <- sg.bern.graph_estimator(samp)$p  # get P for the entire dataset, and use P0 and P1 from dwi.global.est above
+    Pclass <- array(NaN, dim=c(nroi, nroi, length(global.est$classes)))
+    for (k in 1:length(Y.class)) {
+      pclass <- P
+      classp <- global.est$p[,,k]
+      pclass[global.ssg > 0] <- classp[global.ssg > 0]
+      Pclass[,,k] <- pclass
+    }
+    
   tstat.null <- array(NaN, dim=c(nrep))
   null.counts <- array(0, dim=c(length(zset) + 1))
   for (i in 1:nrep) {
@@ -375,7 +416,8 @@ permutation_test <- function(samp, Y, Z, nrep=100, tstat=tstat, sig=.01, verb=FA
   #null.ssgs <- result.null$null.ssgs
   return(list(p=sum(tstat.null < tstat.alt)/nrep, tstat.null=tstat.null, tstat.alt=tstat.alt,
          alt.ssgs=alt.ssgs, null.ssgs=null.ssgs, global.ssgs=global.ssg, zset=zset,
-         null.counts=null.counts/sum(null.counts), alt.lhat=alt.lhat, alt.counts=alt.counts/sum(alt.counts)))
+         null.counts=null.counts/sum(null.counts), alt.lhat=alt.lhat, alt.counts=alt.counts/sum(alt.counts),
+         alt.sg.ct=ct.ssg.alt, global.est=global.est))
 }
 
 plot.zset <- function(zset, zset.ssgs, lhat=NaN) {
@@ -440,21 +482,24 @@ dwi.result <- permutation_test(dwi.bin_graphs, dwi.sexs, dwi.datasets, verb=FALS
 we first visualize our set of subgraphs computed from each study using the sex class label and study as the batch label:
 
 
-```{r, fig.width=8, fig.height=7, warning=FALSE}
+```{r, fig.width=12, fig.height=11, warning=FALSE}
 plot.zset(dwi.result$zset, dwi.result$alt.ssgs, dwi.result$alt.lhat)
 ```
 
 and we visualize the synthetically generated sub-graphs for each dataset from our synthetic bootstrap:
 
-```{r, fig.width=8, fig.height=7}
+```{r, fig.width=12, fig.height=11}
 plot.zset(dwi.result$zset, dwi.result$null.ssgs)
 ```
 
 Along with the globally estimated sub-graph:
 
 ```{r, fig.height=4, fig.width=5}
+Yhat <- sg.bern.subgraph_classifier(dwi.bin_graphs, which(dwi.result$global.ssgs > 0), dwi.result$global.est$p, dwi.result$global.est$pi,
+                                    dwi.result$global.est$classes)$Yhat
+lhat.global <- (length(dwi.sexs) - sum(Yhat == dwi.sexs))/length(dwi.sexs)
 fmriu.plot.plot_graph(dwi.result$global.ssgs,  legend.name=TeX("$I_{uv}$"),
-                        title="Global SSG",
+                        title=TeX(sprintf("Global SSG, $\\hat{L}$=%.3f", lhat.global)),
                         limits=c(min(dwi.result$global.ssgs), max(dwi.result$global.ssgs)), xlabel = "ROI",
                         ylabel = "ROI") + theme(legend.position=NaN)
 ```
@@ -492,8 +537,26 @@ ggplot(data=countdat, aes(x=nds, y=ncount, fill=hypothesis)) +
   geom_bar(stat='identity', alpha=0.3, position='dodge') +
   ylab("Normalized  Count") +
   xlab("Number of Datasets Edge Appears in Subgraph For") +
-  ggtitle("dMRI Edge Count Permutation Test Null")
+  ggtitle("dMRI Edge Count Permutation Test Null") +
+  theme(panel.background=element_rect(fill="#ffffff"))
 ```
+
+and the classification rate as a function of the signal subgraph appearing in a particular number of datasets:
+
+```{R, fig.height=5, fighwidth=8}
+sg_cts <- subgraph.dset_lhat(dwi.bin_graphs, dwi.sexs, dwi.datasets, dwi.result$global.ssgs, dwi.result$alt.sg.ct, tstat=tstat.jaccard,
+                             dwi.result$global.est)
+sg_cts <- rbind(sg_cts, data.frame(count="local sg", dataset=dwi.result$zset, lhat=dwi.result$alt.lhat))
+ggplot(data=sg_cts, aes(x=count, y=lhat, color=dataset, shape=dataset)) +
+  geom_point(size=4) +
+  xlab("Count") +
+  ylab(TeX("$\\hat{L}$")) +
+  ggtitle("dMRI Comparing Performance with Subgraph Used") +
+  theme(panel.background=element_rect(fill="#ffffff"))
+```
+
+count is the number of datasets a particular edge locally appears in. The `global sg` count uses the globally estimated subgraph for each of the given levels. The `local sg` count uses the locally estimated subgraph for each of the given levels. As we can see, using the more reliable levels (`count -> number of datasets`) gives a highly reliable classification performance, which is similar to the performance using the `local sg`, and exceeds performance of `global sg`.
+
 ### Functional
 
 ```{r}
@@ -592,6 +655,24 @@ ggplot(data=countdat, aes(x=nds, y=ncount, fill=hypothesis)) +
   xlab("Number of Datasets Edge Appears in Subgraph For") +
   ggtitle("fMRI Edge Count Permutation Test Null")
 ```
+
+
+and the classification rate as a function of the signal subgraph appearing in a particular number of datasets:
+
+```{R, fig.height=5, fighwidth=8}
+sg_cts <- subgraph.dset_lhat(fmri.bin_graphs, fmri.sexs, fmri.datasets, fmri.result$global.ssgs, fmri.result$alt.sg.ct, tstat=tstat.jaccard,
+                             fmri.result$global.est)
+sg_cts <- rbind(sg_cts, data.frame(count="local sg", dataset=fmri.result$zset, lhat=fmri.result$alt.lhat))
+ggplot(data=sg_cts, aes(x=count, y=lhat, color=dataset, shape=dataset)) +
+  geom_point(size=4) +
+  xlab("Count") +
+  ylab(TeX("$\\hat{L}$")) +
+  ggtitle("fMRI Comparing Performance with Subgraph Used") +
+  theme(panel.background=element_rect(fill="#ffffff"))
+```
+
+count is the number of datasets a particular edge locally appears in. The `global sg` count uses the globally estimated subgraph for each of the given levels. The `local sg` count uses the locally estimated subgraph for each of the given levels. As we can see, using the more reliable levels (`count -> number of datasets`) gives a highly reliable classification performance exceeding that of the `global sg` subgraph.
+
 
 # Across Modality
 

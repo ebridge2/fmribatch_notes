@@ -291,16 +291,18 @@ model.alternative <- function(samp, Y, Z, global.ssg, tstat=tstat, sig=.01, verb
 
 subgraph.dset_lhat <- function(samp, Y, Z, global_sg, alt.counts, sg_ests, tstat=tstat) {
   zset = unique(Z)
-  niter <- (length(zset)+1)*length(zset)
+  un_cts <- sort(unique(c(unique(as.numeric(alt.counts)), 0)))
+  niter <- (length(un_cts))*length(zset)
   count = array(0, dim=c(niter))
   dataset = array(NaN, dim=c(niter))
   lhat = array(0, dim=c(niter))
-  for (i in 0:length(zset)) {
+  for (i in un_cts) {
     if (i > 0) {
-      sg <- which(alt.counts == i)  # get the appropriate edges 
+      sg <- which(alt.counts == i)  # get the appropriate edges
     } else if (i == 0) {
       sg <- which(global_sg > 0)
     }
+
     for (j in 1:length(zset)) {
       ss = Z == zset[j]
       subset.gr = samp[,,ss]
@@ -335,7 +337,7 @@ subgraph.dset_lhat <- function(samp, Y, Z, global_sg, alt.counts, sg_ests, tstat
 # Y: [s] array consisting of our set of signal labels.
 # Z: [s] array consisting of our set of batch-effect labels.
 # nrep: [1] the number of replicates of our bootstrapped simulation.
-permutation_test <- function(samp, Y, Z, nrep=100, p, pi, classes, tstat=tstat, sig=.01, verb=FALSE) {
+permutation_test <- function(samp, Y, Z, nrep=100, p, pi, classes, tstat=tstat.jaccard, sig=.01, verb=FALSE) {
   zset = unique(Z)
   
   global.est <- sg.bern.subgraph_estimator(samp, Y)
@@ -444,7 +446,7 @@ plot.zset <- function(zset, zset.ssgs, lhat=NaN) {
 ```{r}
 nroi = 70
 atlases = c("desikan")
-dwi.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
+dwi.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4', 'KKI2009', 'Templeton114')
 
 graphobj <- fmriu.io.collection.open_graphs(basepath='/data/dwi/edgelists/', datasets = dwi.dsets,
                                             atlases = atlases, gname = "graphs", fmt='edgelist', rtype='array')
@@ -563,7 +565,9 @@ count is the number of datasets a particular edge locally appears in. The `globa
 nroi = 70
 atlases = c('desikan-2mm')
 
-fmri.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
+fmri.dsets = c('BNU1','BNU3','HNU1','SWU4','BNU2','IBATRT',
+               'IPCAS1', 'IPCAS2', 'IPCAS8',
+               'NYU1', 'SWU1', 'SWU2', 'SWU3', 'UWM', 'XHCUMS')
 
 graphobj <- fmriu.io.collection.open_graphs(basepath='/data/fmri/raw/edgelists/', datasets = fmri.dsets,
                                             atlases = atlases, fmt='edgelist', rtype='array')
@@ -663,7 +667,7 @@ and the classification rate as a function of the signal subgraph appearing in a 
 sg_cts <- subgraph.dset_lhat(fmri.bin_graphs, fmri.sexs, fmri.datasets, fmri.result$global.ssgs, fmri.result$alt.sg.ct, tstat=tstat.jaccard,
                              fmri.result$global.est)
 sg_cts <- rbind(sg_cts, data.frame(count="local sg", dataset=fmri.result$zset, lhat=fmri.result$alt.lhat))
-ggplot(data=sg_cts, aes(x=count, y=lhat, color=dataset, shape=dataset)) +
+ggplot(data=sg_cts, aes(x=count, y=lhat, color=dataset)) +
   geom_point(size=4) +
   xlab("Count") +
   ylab(TeX("$\\hat{L}$")) +
