@@ -182,7 +182,7 @@ model.case1 <- function(samp, Y, Z, sessions, nedges=xscale.log10(1, 3), tstat=t
     global.est <- sg.bern.subgraph_estimator(samp, Y)
     # compute test statistics per edge from the contingency matrix
     global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
-    global.edge <- sg.bern.subgraph_edge_estimation(tstats, ne)
+    global.edge <- sg.bern.subgraph_edge_estimation(global.tstat, ne)
     globa.ssg <- array(0, dim=c(nroi, nroi))
     global.ssg[global.edge] <- 1
     edge_result <- list()
@@ -192,7 +192,7 @@ model.case1 <- function(samp, Y, Z, sessions, nedges=xscale.log10(1, 3), tstat=t
       ss1 <- ss & sessions %in% ses_unique[1:(length(ses_unique)/2)]  # first half of sessions randomly
       ss2 <- ss & sessions %in% ses_unique[(length(ses_unique)/2):length(ses_unique)]  # second half of sessions randomly
       res <- model.analyze(samp[,,ss1], samp[,,ss2], Y[ss1], Y[ss2], sessions[ss1], sessions[ss2], ne,
-                           global.ssg, global.est)
+                           global.ssg, global.est, tstat=tstat)
       res$dataset <- zset[i]
       edge_result[[i]] <- res
     }
@@ -211,18 +211,49 @@ model.case2 <- function(samp, Y, Z, subjects, nedges=xscale.log10(1, 3), tstat=t
     global.est <- sg.bern.subgraph_estimator(samp, Y)
     # compute test statistics per edge from the contingency matrix
     global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
-    global.edge <- sg.bern.subgraph_edge_estimation(tstats, ne)
-    globa.ssg <- array(0, dim=c(nroi, nroi))
+    global.edge <- sg.bern.subgraph_edge_estimation(global.tstat, ne)
+    global.ssg <- array(0, dim=c(nroi, nroi))
     global.ssg[global.edge] <- 1
     edge_result <- list()
     for (i in 1:length(zset)) {
       ss <- Z == zset[i]
       sub_unique <- sample(unique(subjects[ss]))  # find the unique labels and resort
-      ss1 <- ss & sessions %in% sub_unique[1:(length(sub_unique)/2)]  # first half of sessions randomly
-      ss2 <- ss & sessions %in% sub_unique[(length(sub_unique)/2):length(sub_unique)]  # second half of sessions randomly
+      ss1 <- ss & subjects %in% sub_unique[1:(length(sub_unique)/2)]  # first half of sessions randomly
+      ss2 <- ss & subjects %in% sub_unique[(length(sub_unique)/2):length(sub_unique)]  # second half of sessions randomly
       res <- model.analyze(samp[,,ss1], samp[,,ss2], Y[ss1], Y[ss2], subjects[ss1], subjects[ss2], ne,
-                           global.ssg, global.est)
+                           global.ssg, global.est, tstat=tstat)
       res$dataset <- zset[i]
+      edge_result[[i]] <- res
+    }
+    edge_result$nedge <- ne
+    result[[j]] <- edge_result
+  }
+  return(result)
+}
+
+model.case3 <- function(samp, Y, Z, sites, nedges=xscale.log10(1, 3), tstat=tstat.jaccard) {
+  nroi <- dim(samp)[2]
+  zset = unique(Z)
+  sset <- unique(sites)
+  result <- list()
+  for (j in 1:length(nedges)) {
+    ne <- nedges[j]
+    global.est <- sg.bern.subgraph_estimator(samp, Y)
+    # compute test statistics per edge from the contingency matrix
+    global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
+    global.edge <- sg.bern.subgraph_edge_estimation(global.tstat, ne)
+    globa.ssg <- array(0, dim=c(nroi, nroi))
+    global.ssg[global.edge] <- 1
+    edge_result <- list()
+    for (i in 1:length(sset)) {
+      ss <- sites == sset[i]
+      zset_unique <- unique(Z[ss])
+      ss1 <- ss & (Z == zset_unique[1])  # first half of sessions randomly
+      ss2 <- ss & (Z == zset_unique[2])  # second half of sessions randomly
+      res <- model.analyze(samp[,,ss1], samp[,,ss2], Y[ss1], Y[ss2], sites[ss1], sites[ss2], ne,
+                           global.ssg, global.est, tstat=tstat)
+      res$site <- ssite[i]
+      res$datasets <- c(zset_unique[1], zset_unique[2])
       edge_result[[i]] <- res
     }
     edge_result$nedge <- ne
@@ -240,48 +271,21 @@ model.case45 <- function(samp, Y, Z, nedges=xscale.log10(1, 3), tstat=tstat.jacc
     global.est <- sg.bern.subgraph_estimator(samp, Y)
     # compute test statistics per edge from the contingency matrix
     global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
-    global.edge <- sg.bern.subgraph_edge_estimation(tstats, ne)
+    global.edge <- sg.bern.subgraph_edge_estimation(global.tstat, ne)
     globa.ssg <- array(0, dim=c(nroi, nroi))
     global.ssg[global.edge] <- 1
     edge_result <- list()
-    for (i in 1:length(zset)) {
+    counter <- 1
+    for (i in 1:(length(zset)-1)) {
         ss1 <- Z == zset[i]
-        sub_unique <- sample(unique(subjects[ss]))  # find the unique labels and resort
-        ss1 <- ss & sessions %in% sub_unique[1:(length(sub_unique)/2)]  # first half of sessions randomly
-        ss2 <- ss & sessions %in% sub_unique[(length(sub_unique)/2):length(sub_unique)]  # second half of sessions randomly
-        res <- model.analyze(samp[,,ss1], samp[,,ss2], Y[ss1], Y[ss2], subjects[ss1], subjects[ss2], ne,
-                             global.ssg, global.est)
-        res$dataset <- zset[i]
-        edge_result[[i]] <- res
-    }
-    edge_result$nedge <- ne
-    result[[j]] <- edge_result
-  }
-  return(result)
-}
-
-model.case5 <- function(samp, Y, Z, nedges=xscale.log10(1, 3), tstat=tstat.jaccard) {
-  nroi <- dim(samp)[2]
-  zset = unique(Z)
-  result <- list()
-  for (j in 1:length(nedges)) {
-    ne <- nedges[j]
-    global.est <- sg.bern.subgraph_estimator(samp, Y)
-    # compute test statistics per edge from the contingency matrix
-    global.tstat <- sg.bern.edge_test(global.est$cont_matrix)
-    global.edge <- sg.bern.subgraph_edge_estimation(tstats, ne)
-    globa.ssg <- array(0, dim=c(nroi, nroi))
-    global.ssg[global.edge] <- 1
-    edge_result <- list()
-    for (i in 1:length(zset)) {
-      ss1 <- Z == zset[i]
-      for (k in (i+1):length(zset)) {
-
-      }
-      res <- model.analyze(samp[,,ss1], samp[,,ss2], Y[ss1], Y[ss2], Z[ss1], Z[ss2], ne,
-                           global.ssg, global.est)
-      res$dataset <- zset[i]
-      edge_result[[i]] <- res
+        for (k in (i+1):length(zset)) {
+          ss2 <- Z == zset[j]
+          res <- model.analyze(samp[,,ss1], samp[,,ss2], Y[ss1], Y[ss2], subjects[ss1], subjects[ss2], ne,
+                               global.ssg, global.est, tstat=tstat)
+          res$datasets <- c(zset[i], zset[j])
+          edge_result[[counter]] <- res
+          counter <- counter + 1
+        }
     }
     edge_result$nedge <- ne
     result[[j]] <- edge_result
@@ -322,10 +326,12 @@ model.analyze <- function(samp1, samp2, Y1, Y2, Z1, Z2, nedge, global.ssg, globa
 
 # givens
 #=========================#
-basepath='/data'
+basepath='/data/mr_result/'
 nrep = 100  # number of replicates for synthetic bootstrap to get null
 
 
+# dMRI ------------------------------------
+# ========================================#
 nroi = 70
 atlases = c("desikan")
 dwi.dsets = c('BNU1', 'BNU3', 'HNU1', 'SWU4')
@@ -354,3 +360,33 @@ dwi.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
 dwi.bin_graphs = apply(dwi.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
 dwi.bin_graphs <- aperm(dwi.bin_graphs, c(2,3,1))
 
+
+# fMRI ------------------------------------
+# ========================================#
+nroi = 70
+atlases = c('desikan-2mm')
+
+fmri.dsets = c('BNU1', 'BNU3')
+
+graphobj <- fmriu.io.collection.open_graphs(basepath=paste(basepath,'/fmri/ranked/edgelists/', sep=""), datasets = fmri.dsets,
+                                            atlases = atlases, fmt='edgelist', rtype='array')
+
+gcpy = graphs
+datasets = graphobj$dataset
+subjects = graphobj$subjects
+sessions = graphobj$sessions
+
+sexpath = paste(basepath,'/phenotypic/', sep="")
+class = parse_class(sexpath, fmri.dsets, subjects)
+sexs = class$sex
+# dwi.diseases = class$disease
+ages = class$age
+
+fmri.graphs = graphs[!is.nan(ages) & !is.nan(sexs),,]
+fmri.datasets = datasets[!is.nan(ages) & !is.nan(sexs)]
+fmri.subjects = subjects[!is.nan(ages) & !is.nan(sexs)]
+fmri.sessions = sessions[!is.nan(ages) & !is.nan(sexs)]
+fmri.ages = ages[!is.nan(ages) & !is.nan(sexs)]
+fmri.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
+
+graphs = graphobj$graphs
