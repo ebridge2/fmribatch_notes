@@ -1,0 +1,158 @@
+---
+title: "Subgraphing Batch Cases"
+author: "Eric Bridgeford"
+date: "December 15, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('./plot_results.R')
+```
+
+# Case 1: Session Partitioning
+
++ Within a study with TRT, partition into 2 sets of sessions, the first session and second session  
++ Is there a batch effect between sessions of a particular study?  
+
+## Procedure
+
++ Take first half of sessions from all connectomes as set 1, other half as set 2.  
+    + Ie, if 4 sessions in a dataset, we would choose 2 sessions randomly, and then the other   
+1) Train model on first group of sessions, and test on second half to obtain $\hat{L}_1$, and train model on second half, and test on second group of sessions to obtain $\hat{L}_2$. 
+2) Train model on both sets at once, and obtain $\tau_{observed}$
+3) permute the set labels of the combined set $nperm$ times (maintaining sex of each graph) to obtain the distribution of $\tau_{null}$, reporting $\hat{p}$, the estimator of $\mathbb{E}\left[\frac{\tau_{null} < \tau_{observed}}{nperm}\right]$
+
+### DWI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case1dwi.rds')
+data <- prepare_case1(result)
+plot_case1(data)
+```
+
+### fMRI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case1fmri.rds')
+data <- prepare_case1(result)
+plot_case1(data)
+```
+
+# Case 2: Subject Partitioning
+
++ Within a study, partition into 2 sets of subjects, the first half of subjects and second half of subjects
++ Is there a batch effect between subjects in a particular study?
+
+## Procedure
+
++ Take first half of subjects from all connectomes as set 1, other half as set 2.  
+    + Ie, if 50 subjects in a dataset, we would choose 25 subjects randomly, and then the other   
+1) Train model on first group of subjects, and test on second half to obtain $\hat{L}_1$, and train model on second half, and test on second group of subjects to obtain $\hat{L}_2$. 
+2) Train model on both sets at once, and obtain $\tau_{observed}$
+3) permute the set labels of the combined set $nperm$ times (maintaining sex of each graph) to obtain the distribution of $\tau_{null}$, reporting $\hat{p}$, the estimator of $\mathbb{E}\left[\frac{\tau_{null} < \tau_{observed}}{nperm}\right]$
+
+### DWI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case2dwi.rds')
+data <- prepare_case2(result)
+plot_case2(data)
+```
+
+### fMRI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case2fmri.rds')
+data <- prepare_case2(result)
+plot_case1(data)
+```
+
+# Case 3: Same Site
+
++ Take 2 out-of-sample studies at same site. Sets are study 1 at site $\alpha$, and study 2 at site $\alpha$.  
++ Is there a batch effect between studies with site held fixed?  
+
+## Procedure
+
++ Take first dataset as set 1, other as set 2.   
+1) Train model on first dataset, and test on second half to obtain $\hat{L}_1$, and train model on second half, and test on second group of subjects to obtain $\hat{L}_2$. 
+2) Train model on both sets at once, and obtain $\tau_{observed}$
+3) exchange the sets of the combined set $nperm$ times (maintaining sex of each graph) to obtain the distribution of $\tau_{null}$, reporting $\hat{p}$, the estimator of $\mathbb{E}\left[\frac{\tau_{null} < \tau_{observed}}{nperm}\right]$
+
+### DWI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case3dwi.rds')
+data <- prepare_case3(result)
+plot_case3(data)
+```
+
+### fMRI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case3fmri.rds')
+data <- prepare_case1(result)
+plot_case3(data)
+```
+
+
+# Case 4
+
+Take 2 studies with same demographics. Sets are study 1 at site $\alpha$ with demographics $d_1$, and study 2 at site $\beta$ with demographics $d_1$.  
+Is there a batch effect between sites with demographic held fixed?  
+
+
+## Procedure
+
++ Take first dataset as set 1, other as set 2.   
+1) Train model on first dataset, and test on second half to obtain $\hat{L}_1$, and train model on second half, and test on second group of subjects to obtain $\hat{L}_2$. 
+2) Train model on both sets at once, and obtain $\tau_{observed}$
+3) permute the set labels of the combined set $nperm$ times (maintaining sex of each graph) to obtain the distribution of $\tau_{null}$, reporting $\hat{p}$, the estimator of $\mathbb{E}\left[\frac{\tau_{null} < \tau_{observed}}{nperm}\right]$
+
+### DWI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case4dwi.rds')
+data <- prepare_case45(result)
+plot_case45(data)
+```
+
+### fMRI
+
+```{r}
+result <- readRDS('/data/paper/subgraphing_results/case4fmri.rds')
+data <- prepare_case45(result)
+plot_case45(data)
+```
+
+
+# Case 5
+
+Take 2 studies with different demographics. Sets are study 1 at site $\alpha$ with demographics $d_1$, and study 2 at site $\beta$ with demographics $d_2$.  
+Is there a batch effect between sites without demographic held fixed?  
+
+
+## Procedure
+
++ Take first dataset as set 1, other as set 2.   
+1) Train model on first dataset, and test on second half to obtain $\hat{L}_1$, and train model on second half, and test on second group of subjects to obtain $\hat{L}_2$. 
+2) Train model on both sets at once, and obtain $\tau_{observed}$
+3) permute the set labels of the combined set $nperm$ times (maintaining sex of each graph) to obtain the distribution of $\tau_{null}$, reporting $\hat{p}$, the estimator of $\mathbb{E}\left[\frac{\tau_{null} < \tau_{observed}}{nperm}\right]$
+
+
+### DWI
+
+```{r, eval=FALSE}
+result <- readRDS('/data/paper/subgraphing_results/case5dwi.rds')
+data <- prepare_case5(result)
+plot_case5(data)
+```
+
+### fMRI
+
+```{r, eval=FALSE}
+result <- readRDS('/data/paper/subgraphing_results/case5fmri.rds')
+data <- prepare_case5(result)
+plot_case5(data)
+```
