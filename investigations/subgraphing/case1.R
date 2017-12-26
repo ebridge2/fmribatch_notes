@@ -1,15 +1,10 @@
-# process the results into a data frame
-process_case1 <- function(result) {
-  
-}
-
-
+source('./givens.R')
 # givens
 #=========================#
 basepath='/mnt/nfs2/MR/all_mr'
 basepath='/data/all_mr'
-nrep = 50  # number of replicates for synthetic bootstrap to get null
-
+nrep = 100  # number of replicates for synthetic bootstrap to get null
+nedge = 10
 
 # dMRI ------------------------------------
 # ========================================#
@@ -41,15 +36,16 @@ dwi.sexs = sexs[!is.nan(ages) & !is.nan(sexs)]
 dwi.bin_graphs = apply(dwi.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
 dwi.bin_graphs <- aperm(dwi.bin_graphs, c(2,3,1))
 
-result <- model.case1(dwi.bin_graphs, dwi.sexs, dwi.datasets, dwi.sessions, nedges=xscale.log10(1, 3, n=6), tstat=tstat.jaccard, nrep=nrep)
+result <- model.case1(dwi.bin_graphs, dwi.sexs, dwi.datasets, dwi.sessions, nedges=xscale.log10(1, 3, n=nedge),
+                      tstat=tstat.jaccard, nrep=nrep, xval=FALSE)
 saveRDS(result, 'case1dwi.rds')
 
 
 # givens
 #=========================#
 basepath='/mnt/nfs2/MR/all_mr'
-nrep = 50  # number of replicates for synthetic bootstrap to get null
-
+nrep = 100  # number of replicates for synthetic bootstrap to get null
+nedge = 10
 
 # fMRI ------------------------------------
 # ========================================#
@@ -83,5 +79,6 @@ fmri.sites <- sites[sapply(fmri.datasets, function(x) which(x == fmri.dsets))]
 fmri.bin_graphs = apply(fmri.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
 fmri.bin_graphs <- aperm(fmri.bin_graphs, c(2,3,1))
 
-result <- model.case1(fmri.bin_graphs, fmri.sexs, fmri.datasets, fmri.sessions, nedges=xscale.log10(1, 3, n=6), tstat=tstat.jaccard, nrep=nrep)
+result <- model.case1(fmri.bin_graphs, fmri.sexs, fmri.datasets, fmri.sessions, nedges=xscale.log10(1, 3, n=nedge),
+                      tstat=tstat.jaccard, nrep=nrep, xval=FALSE)
 saveRDS(result, 'case1fmri.rds')

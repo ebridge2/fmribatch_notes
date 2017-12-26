@@ -1,10 +1,10 @@
-
+source('./givens.R')
 
 # givens
 #=========================#
 basepath='/mnt/nfs2/MR/all_mr'
-nrep = 50  # number of replicates for synthetic bootstrap to get null
-
+nrep = 100  # number of replicates for synthetic bootstrap to get null
+nedge = 10
 
 # dMRI ------------------------------------
 # ========================================#
@@ -38,7 +38,8 @@ dwi.sites <- sites[sapply(dwi.datasets, function(x) which(x == dwi.dsets))]
 dwi.bin_graphs = apply(dwi.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
 dwi.bin_graphs <- aperm(dwi.bin_graphs, c(2,3,1))
 
-result <- model.case3(dwi.bin_graphs, dwi.sexs, dwi.datasets, dwi.sites, nedges=xscale.log10(1, 3, n=6), tstat=tstat.jaccard, nrep=nrep)
+result <- model.case3(dwi.bin_graphs, dwi.sexs, dwi.datasets, dwi.sites, nedges=xscale.log10(1, 3, n=6),
+                      tstat=tstat.jaccard, nrep=nrep, xval=FALSE)
 saveRDS(result, 'case3dwi.rds')
 
 # givens
@@ -79,5 +80,6 @@ fmri.sites <- sites[sapply(fmri.datasets, function(x) which(x == fmri.dsets))]
 fmri.bin_graphs = apply(fmri.graphs, c(2,3), function(x) thresh_matrix(x, thresh=0))
 fmri.bin_graphs <- aperm(fmri.bin_graphs, c(2,3,1))
 
-result <- model.case3(fmri.bin_graphs, fmri.sexs, fmri.datasets, fmri.sites, nedges=xscale.log10(1, 3, n=6), tstat=tstat.jaccard, nrep=nrep)
+result <- model.case3(fmri.bin_graphs, fmri.sexs, fmri.datasets, fmri.sites, nedges=xscale.log10(1, 3, n=6),
+                      tstat=tstat.jaccard, nrep=nrep, xval=FALSE)
 saveRDS(result, 'case3fmri.rds')
